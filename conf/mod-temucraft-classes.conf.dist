@@ -1,0 +1,54 @@
+[worldserver]
+
+########################################
+# mod-temucraft-classes
+########################################
+#
+#    Temucraft.Reagents.Enable
+#        Description: Reagents as a choice. Class spells have their reagents back (portals, Arcane Brilliance, greater
+#                     blessings, warlock stones and summons, Rebirth...); with this on, players without reagents
+#                     (by their choice or the default) cast them free. 0 = everyone needs the reagents.
+#        Default:     1
+
+Temucraft.Reagents.Enable = 1
+
+#
+#    Temucraft.Reagents.Default
+#        Description: Whether players who never typed .reagents on/off use reagents.
+#        Default:     0 - (no reagents needed)
+#                     1 - (reagents needed)
+
+Temucraft.Reagents.Default = 0
+
+#
+#    Temucraft.Reagents.AllowChoice
+#        Description: Players may choose for themselves with .reagents on|off. 0 = Default applies to everyone.
+#        Default:     1
+
+Temucraft.Reagents.AllowChoice = 1
+
+#
+#    Temucraft.Requirements.Anvil
+#    Temucraft.Requirements.Forge
+#    Temucraft.Requirements.CookingFire
+#    Temucraft.Requirements.OtherFocus
+#    Temucraft.Requirements.Tools
+#    Temucraft.Requirements.SoulShards
+#        Description: Requirements the client's spell data lost, one switch per kind (applied at startup and on
+#                     .reload config):
+#                       Anvil       smithing recipes need an anvil nearby (also the Black and Icebellow Anvils)
+#                       Forge       smelting and forge recipes need a forge nearby (also the Black Forge)
+#                       CookingFire cooking recipes need a cooking fire nearby
+#                       OtherFocus  alchemy lab, moonwell and altar of shadows recipes
+#                       Tools       recipes that need a tool in your bags (Jeweler's Kit, Simple Grinder)
+#                       SoulShards  Create Healthstone, Inferno and Soulshatter use a soul shard (with .reagents off
+#                                   the reagent choice still makes them free)
+#        Default:     1 - required (as in the normal game)
+#                     0 - not required (craft anywhere / without the tool or shard)
+
+Temucraft.Requirements.Anvil = 1
+Temucraft.Requirements.Forge = 1
+Temucraft.Requirements.CookingFire = 1
+Temucraft.Requirements.OtherFocus = 1
+Temucraft.Requirements.Tools = 1
+Temucraft.Requirements.SoulShards = 1
