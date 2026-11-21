@@ -1,0 +1,269 @@
+[worldserver]
+########################################
+# mod-temucraft-class-tweaks
+########################################
+#
+#    Temucraft.ClassTweaks.Enable
+#        Description: Turns the module's changes made in code on (everything below).
+#                     The database changes (soul shard stacks, prices, Totemic Recall, Ritual of Doom) are in its SQL.
+#        Default:     1
+#
+#    Temucraft.ClassTweaks.Cooldowns
+#        Description: Other cooldowns for chosen spells: spell id and cooldown in seconds, separated by spaces.
+#                     The client's cooldown display follows along. Applies on .reload config.
+#        Default:     ""   (racial cooldowns are set by mod-temucraft-racials)
+#
+#    Temucraft.ClassTweaks.SoulBags
+#        Description: An equipped soul bag sometimes keeps the Soul Shard, Infernal Stone or Demonic Figurine a spell
+#                     used. The biggest soul bag counts: MinChance at 16 slots or fewer, rising to MaxChance at 32.
+#        Default:     1
+#
+#    Temucraft.ClassTweaks.SoulBags.MinChance
+#    Temucraft.ClassTweaks.SoulBags.MaxChance
+#        Description: Percent chances for the smallest and biggest soul bags.
+#        Default:     5, 25
+#
+#    Temucraft.ClassTweaks.NightElfPriestBows
+#        Description: Night elf priests know how to use bows (Bows and Shoot are taught at login). Turning it off
+#                     doesn't take them away from priests who already have them.
+#        Default:     1
+#
+#    Temucraft.ClassTweaks.AnyWeapon
+#        Description: Every race and class can learn every weapon and Dual Wield from the weapon masters (they teach
+#                     them all). A new ranged weapon comes with the attack the class gets with it (Shoot, Throw,
+#                     or another module's Auto Shot), else Shoot. .reload config applies it.
+#        Default:     1
+#
+#    Temucraft.ClassTweaks.AnyArmor
+#        Description: The same for armor: cloth, leather, mail (40), plate (40) and shields (with Block).
+#                     The client gets the same from tools/build_open_skills.py (patch-T).
+#        Default:     1
+#
+#    Temucraft.ClassTweaks.RaidWideAuras
+#        Description: Class auras, shouts and totems that reach only the party reach the whole raid. Heals stay
+#                     party-wide. Needs a restart.
+#        Default:     1
+#
+#    Temucraft.ClassTweaks.BuffMinutes
+#        Description: Friendly class buffs of 10 or 30 minutes (Blessings, Fortitude, Arcane Intellect, Mark of the
+#                     Wild, armors, seals, shields...) last this many minutes. 0 = unchanged. Needs a restart.
+#        Default:     60
+#
+#    Temucraft.ClassTweaks.HappyPets
+#        Description: Hunter pets are always happy: no feeding needed.
+#        Default:     1
+#
+#    Temucraft.ClassTweaks.Parachute
+#        Description: Parachute (every class trainer teaches it from level 10): its cooldown by level, as
+#                     "level:seconds" steps. The highest step reached counts. Empty = the spell's own 1 minute.
+#        Default:     "10:600 20:480 30:360 40:300 50:240 60:180 70:150 80:120"
+
+Temucraft.ClassTweaks.Enable = 1
+Temucraft.ClassTweaks.Cooldowns = ""
+Temucraft.ClassTweaks.SoulBags = 1
+Temucraft.ClassTweaks.SoulBags.MinChance = 5
+Temucraft.ClassTweaks.SoulBags.MaxChance = 25
+Temucraft.ClassTweaks.NightElfPriestBows = 1
+Temucraft.ClassTweaks.AnyWeapon = 1
+Temucraft.ClassTweaks.AnyArmor = 1
+Temucraft.ClassTweaks.RaidWideAuras = 1
+Temucraft.ClassTweaks.BuffMinutes = 60
+Temucraft.ClassTweaks.HappyPets = 1
+Temucraft.ClassTweaks.Parachute = "10:600 20:480 30:360 40:300 50:240 60:180 70:150 80:120"
+
+#
+#    Temucraft.ClassTweaks.NoDaze
+#        Description: Daze spells that do nothing (no slow, no dismount): the creature hit from behind (1604 and
+#                     variants) and the daze of Aspect of the Cheetah / Pack (15571). Player abilities that daze a
+#                     target (Feral Charge - Cat, Shield Bash's daze 29703, Piercing Howl...) are not listed. Spell ids, comma separated; "" = keep daze.
+#                     Needs a restart.
+#        Default:     "1604,15571,35955,51372,135016,1201861"
+
+Temucraft.ClassTweaks.NoDaze = "1604,15571,35955,51372,135016,1201861"
+
+#
+#    Temucraft.ClassTweaks.SmartTranquility
+#        Description: Tranquility heals the 5 most injured raid members in reach every tick instead of the party.
+#                     Needs a restart.
+#        Default:     1
+
+Temucraft.ClassTweaks.SmartTranquility = 1
+
+########################################
+# mod-temucraft-class-reworks
+########################################
+#
+#    Temucraft.ClassReworks.Enable
+#        Description: Affliction feeding the group, the price of curses, bleeds keeping Slice and Dice up.
+#                     (Tank mode and healer threat are in mod-temucraft-threat.)
+#        Default:     1
+#
+#    Temucraft.ClassReworks.Affliction (.Health, .Mana, .Range)
+#        Description: Damage over time from an Affliction warlock's spells heals group members within Range yards by
+#                     Health % of the damage and gives Mana % as mana (the warlock alone: themselves).
+#        Default:     1, 2, 1, 40
+#
+#    Temucraft.ClassReworks.CursePrice (.Percent, .Seconds, .Curses)
+#        Description: A grouped warlock who curses an enemy carries a copy of the curse at Percent strength for up to
+#                     Seconds (Weakness, Recklessness, Tongues - longer casts -, Elements, Exhaustion; first ranks
+#                     listed). The Malediction talent removes the price, and makes Curse of Recklessness lower armor
+#                     only.
+#        Default:     1, 25, 30, "702 16231 1714 1490 18223"
+#
+#    Temucraft.ClassReworks.SliceAndDiceBleeds
+#        Description: Every tick of a rogue's bleeds (Rupture, Garrote, bleeding weapons...) adds 1 sec to their Slice
+#                     and Dice, up to its full length.
+#        Default:     1
+
+
+Temucraft.ClassReworks.Enable = 1
+Temucraft.ClassReworks.Affliction = 1
+Temucraft.ClassReworks.Affliction.Health = 2
+Temucraft.ClassReworks.Affliction.Mana = 1
+Temucraft.ClassReworks.Affliction.Range = 40
+Temucraft.ClassReworks.CursePrice = 1
+Temucraft.ClassReworks.CursePrice.Percent = 25
+Temucraft.ClassReworks.CursePrice.Seconds = 30
+Temucraft.ClassReworks.CursePrice.Curses = "702 16231 1714 1490 18223"
+Temucraft.ClassReworks.SliceAndDiceBleeds = 1
+
+########################################
+# Class and race changes (TemucraftClassChanges.cpp)
+########################################
+#
+#    Temucraft.ClassChanges.Enable                 All of the changes below. Default: 1
+#    Temucraft.ClassChanges.WeaponMasteries        Racial Sword/Mace/Axe Specialization: +1% crit and 1% less dodged/parried
+#                                           (4 expertise) with those weapons, instead of 3-5 expertise. Restart. Default: 1
+#    Temucraft.ClassChanges.RacialHeals            Every race learns its own racial heal (a themed Cannibalize: Second Wind,
+#                                           Hearty Brew, Moonlit Prayer...); undead keep Cannibalize. Default: 1
+#    Temucraft.ClassChanges.VictoryRushLevel       Warriors learn Victory Rush at this level (0 = as normal, 62). Default: 10
+#    Temucraft.ClassChanges.GhostWolfWaterWalking  Shamans who know Water Walking walk on water in Ghost Wolf. Default: 1
+#    Temucraft.ClassChanges.SentryTotemReveal      Sentry Totem reveals stealthed/invisible enemies within this many yards
+#                                           (0 = off). Default: 10
+#    Temucraft.ClassChanges.RollingThunder.*       Lightning Bolt / Chain Lightning hits with Lightning Shield up: Chance % to
+#                                           restore Mana % of max mana and add a charge, up to MaxCharges. Chance 0 = off.
+#                                           Defaults: 60, 2, 9
+#    Temucraft.ClassChanges.WildkinFrenzy          Hit in Moonkin Form: +5% spell damage, +10% attack power, no pushback, 8 sec. 1
+#    Temucraft.ClassChanges.TigersFury             Tiger's Fury 18 sec; bleed ticks during it stack Tiger's Bloodlust. Restart. 1
+#    Temucraft.ClassChanges.JudgementOfLightReserve  Judgement of Light at full health stores Light's Reserve. 1
+#    Temucraft.ClassChanges.OverwhelmingLight      Holy paladins: a heal to full heals 3 nearby injured allies for this %. 0 = off. 10
+#    Temucraft.ClassChanges.HolyFire               Holy Fire +10% direct, burn 16 sec and +40% in total. Restart. 1
+#    Temucraft.ClassChanges.LightwellCharges       Lightwell charges, one drink per player (0 = as normal). Restart. 15
+#    Temucraft.ClassChanges.Banes                  Agony, Doom, Tongues, Exhaustion are banes: one bane + one curse. Restart. 1
+#    Temucraft.ClassChanges.DemonicEmpowerment     Also empowers Infernal, Doomguard and an enslaved demon. 1
+
+Temucraft.ClassChanges.Enable = 1
+Temucraft.ClassChanges.WeaponMasteries = 1
+Temucraft.ClassChanges.RacialHeals = 1
+Temucraft.ClassChanges.VictoryRushLevel = 10
+Temucraft.ClassChanges.GhostWolfWaterWalking = 1
+Temucraft.ClassChanges.SentryTotemReveal = 10
+Temucraft.ClassChanges.RollingThunder.Chance = 60
+Temucraft.ClassChanges.RollingThunder.Mana = 2
+Temucraft.ClassChanges.RollingThunder.MaxCharges = 9
+Temucraft.ClassChanges.WildkinFrenzy = 1
+Temucraft.ClassChanges.TigersFury = 1
+Temucraft.ClassChanges.JudgementOfLightReserve = 1
+Temucraft.ClassChanges.OverwhelmingLight = 10
+Temucraft.ClassChanges.HolyFire = 1
+Temucraft.ClassChanges.LightwellCharges = 15
+Temucraft.ClassChanges.Banes = 1
+Temucraft.ClassChanges.DemonicEmpowerment = 1
+
+########################################
+# New class spells (TemucraftNewClassSpells.cpp)
+########################################
+#
+#    Temucraft.NewClassSpells.Enable          Teach the new spells below by level. Default: 1
+#    Temucraft.NewClassSpells.OverloadedBlast Mages, from 32: usable for 5 sec after one of your spells is resisted. 1
+#    Temucraft.NewClassSpells.ElunesArrow     Night elf priests with a bow, from 20: weapon damage plus Fire. 1
+#    Temucraft.NewClassSpells.StonewallSlam   Shamans with a shield, from 20: a 5 yd taunt. 1
+
+Temucraft.NewClassSpells.Enable = 1
+Temucraft.NewClassSpells.OverloadedBlast = 1
+Temucraft.NewClassSpells.ElunesArrow = 1
+Temucraft.NewClassSpells.StonewallSlam = 1
+
+#
+#    Temucraft.ClassTweaks.SmartTranquility.Targets
+#        Description: How many of the most hurt party members each Tranquility tick heals (with SmartTranquility).
+#        Default:     5
+
+Temucraft.ClassTweaks.SmartTranquility.Targets = 5
+
+#
+#    Temucraft.ClassTweaks.OverwhelmingLight.Range
+#        Description: Yards around the healed target that Overwhelming Light also heals.
+#        Default:     10
+
+Temucraft.ClassTweaks.OverwhelmingLight.Range = 10
+
+#
+#    Temucraft.ClassTweaks.OverwhelmingLight.Targets
+#        Description: How many hurt allies Overwhelming Light heals at most.
+#        Default:     3
+
+Temucraft.ClassTweaks.OverwhelmingLight.Targets = 3
+
+#
+#    Temucraft.ClassTweaks.LightsReserve.PercentPerStack
+#        Description: Extra Judgement of Light healing per Light's Reserve stack, in percent.
+#        Default:     5
+
+Temucraft.ClassTweaks.LightsReserve.PercentPerStack = 5
+
+#
+#    Temucraft.ClassTweaks.DemonicEmpowerment.HealthCost
+#        Description: Percent of an enslaved demon's health that Demonic Empowerment costs it.
+#        Default:     10
+
+Temucraft.ClassTweaks.DemonicEmpowerment.HealthCost = 10
+
+#
+#    Temucraft.ClassTweaks.HolyFire.DirectBonus
+#        Description: Percent more direct damage for Holy Fire (when the Holy Fire change above is on).
+#        Default:     10
+
+Temucraft.ClassTweaks.HolyFire.DirectBonus = 10
+
+#
+#    Temucraft.ClassTweaks.HolyFire.PeriodicBonus
+#        Description: Percent more total damage over time for Holy Fire (when the Holy Fire change above is on).
+#        Default:     40
+
+Temucraft.ClassTweaks.HolyFire.PeriodicBonus = 40
+
+#
+#    Temucraft.ClassReworks.SliceAndDiceBleeds.Milliseconds
+#        Description: Milliseconds each rogue bleed tick adds to Slice and Dice.
+#        Default:     1000
+
+Temucraft.ClassReworks.SliceAndDiceBleeds.Milliseconds = 1000
+
+#
+#    Temucraft.NewClassSpells.StonewallSlam.Level
+#        Description: Level at which shamans learn Stonewall Slam.
+#        Default:     20
+
+Temucraft.NewClassSpells.StonewallSlam.Level = 20
+
+#
+#    Temucraft.ClassTweaks.SpellFirst
+#        Description: First of the six class spells this module adds (Wildkin Frenzy, Tiger's Bloodlust, Light's Reserve, Overwhelming Light, Empowered Infernal, Empowered Thrall), in that order. Must match data/sql.
+#        Default:     96400
+
+Temucraft.ClassTweaks.SpellFirst = 96400
+
+#
+#    Temucraft.ClassTweaks.RacialHeals.SpellFirst
+#        Description: First of the 16 racial heal spells this module adds. Must match data/sql.
+#        Default:     100172
+
+Temucraft.ClassTweaks.RacialHeals.SpellFirst = 100172
+
+#
+#    Temucraft.NewClassSpells.SpellFirst
+#        Description: First of the 17 new class spells (Overloaded Blast ranks, Overloaded, Overload Sense, Elune's Arrow ranks, Stonewall Slam). Must match data/sql.
+#        Default:     100110
+
+Temucraft.NewClassSpells.SpellFirst = 100110

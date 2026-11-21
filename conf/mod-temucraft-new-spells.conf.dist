@@ -1,0 +1,32 @@
+[worldserver]
+
+########################################
+# mod-temucraft-new-spells
+########################################
+#
+#    Temucraft.NewSpells.SteadyControl
+#        Description: Players also know a steady copy of their crowd control (Polymorph, Entangling Roots,
+#                     Hibernate, Sap, Gouge, Blind, Repentance, Hex, Shackle Undead, Scatter Shot) that damage doesn't
+#                     break: the copy of the highest rank they know, same cooldown, level and diminishing returns.
+#        Default:     1
+#
+#    Temucraft.NewSpells.Slap
+#        Description: Classes that use mana know Slap: wakes a sleeping player (friend or foe); enemies also take a
+#                     basic attack. 5% base mana, 30 sec cooldown.
+#        Default:     1
+#
+#    Temucraft.NewSpells.PowerWordBarrier
+#        Description: Discipline priests from level 60 know Power Word: Barrier (raid within 10 yards: 25% less damage
+#                     for 10 sec, 3 min). Heroic Leap and Redirect are taught by trainers (SQL).
+#        Default:     1
+
+Temucraft.NewSpells.SteadyControl = 1
+Temucraft.NewSpells.Slap = 1
+Temucraft.NewSpells.PowerWordBarrier = 1
+
+#
+#    Temucraft.NewSpells.PowerWordBarrier.Level
+#        Description: Level at which Discipline priests get Power Word: Barrier.
+#        Default:     60
+
+Temucraft.NewSpells.PowerWordBarrier.Level = 60

@@ -54,3 +54,17 @@ The client's spell data lost some stock requirements. The server puts them back 
 `Temucraft.Requirements.Anvil / Forge / CookingFire / OtherFocus / Tools / SoulShards` says (1 = required, the
 default; 0 = not required). The stock values are in `mod_temucraft_requirement` (1,427 rows); they apply at startup
 and on `.reload config`.
+
+## Also in this module
+
+These were separate modules; they now live here, each with its own folder under `src/`, its own config file in
+`conf/` (same file and key names as before) and its notes under `docs/`. Their SQL files kept their names, so nothing
+is applied twice. Remove the old module folders from `modules/` before building.
+
+| Was | What | Code | Notes |
+|---|---|---|---|
+| mod-temucraft-class-tweaks | class and race changes, reworks and new class spells | `src/class_tweaks` | [docs/class_tweaks.md](docs/class_tweaks.md) |
+| mod-temucraft-new-spells | new spells (Power Word: Barrier and others) | `src/new_spells` | [docs/new_spells.md](docs/new_spells.md) |
+| mod-temucraft-racials | racial changes and heritage (racial bonuses) | `src/racials` | [docs/racials.md](docs/racials.md) |
+| mod-temucraft-pushback | spell pushback: off, Wrath or classic | `src/pushback` | [docs/pushback.md](docs/pushback.md) |
+| mod-temucraft-ranged-autoattack | right-click Auto Shot for every class | `src/ranged_autoattack` | [docs/ranged_autoattack.md](docs/ranged_autoattack.md) |
