@@ -23,7 +23,7 @@ Class changes: new talents and their scripts, new racials, and reagents as a pla
 | world | `skilllineability_dbc` | 31798, 31800-31806 (racials) |
 | world | `spell_ranks`, `spell_proc`, `spell_script_names` | for the spells above |
 | world | `creature_template` (+`_model`) | 601990 (Summon Hawk) |
-| characters | `mod_temucraft_reagent_choice` | per character |
+| characters | `mod_temucraft_character_setting` (setting `reagents`) | per character |
 | client | `Spell.dbc`, `Talent.dbc`, `SkillLineAbility.dbc` | the same rows |
 
 ## Works with other modules

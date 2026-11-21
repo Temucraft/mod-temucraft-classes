@@ -86,11 +86,11 @@ public:
     void OnPlayerLogin(Player* player) override
     {
         State state;
-        if (QueryResult result = CharacterDatabase.Query("SELECT `use_reagents` FROM `mod_temucraft_reagent_choice` WHERE `guid` = {}",
+        if (QueryResult result = CharacterDatabase.Query("SELECT `value` FROM `mod_temucraft_character_setting` WHERE `guid` = {} AND `setting` = 'reagents'",
             player->GetGUID().GetCounter()))
         {
             state.chosen = true;
-            state.use = result->Fetch()[0].Get<bool>();
+            state.use = result->Fetch()[0].Get<int32>() != 0;
         }
         {
             std::lock_guard lock(sLock);
@@ -164,7 +164,7 @@ public:
             state.chosen = true;
             state.use = use;
         }
-        CharacterDatabase.Execute("REPLACE INTO `mod_temucraft_reagent_choice` (`guid`, `use_reagents`) VALUES ({}, {})",
+        CharacterDatabase.Execute("REPLACE INTO `mod_temucraft_character_setting` (`guid`, `setting`, `value`) VALUES ({}, 'reagents', {})",
             player->GetGUID().GetCounter(), use ? 1 : 0);
         ApplyMask(player);
         handler->PSendSysMessage(TemucraftModuleText("mod-temucraft-classes", handler, 5, "|cffffcc00Reagents:|r {}"), use ? "on. Your class spells use their reagents (portals, greater "
