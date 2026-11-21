@@ -3,7 +3,7 @@
  *
  * The class spells that need reagents (portals, Arcane Brilliance, the greater blessings, Gift of the Wild,
  * Prayer of Fortitude, warlock stones and summons, Rebirth, Reincarnation...) have them again in Spell.dbc. Each
- * player picks with .reagents on|off whether to carry them; Temucraft.Reagents.Default is the choice of players who
+ * player picks with .temucraft reagents on|off whether to carry them; Temucraft.Reagents.Default is the choice of players who
  * never picked, and Temucraft.Reagents.AllowChoice = 0 makes the default apply to everyone.
  *
  * "Off" works the way the game's own no-reagent effects (glyphs, some talents) do: the player's no-reagent mask
@@ -98,8 +98,8 @@ public:
         }
         ApplyMask(player);
         if (reagents.enable && reagents.allowChoice && !state.chosen)
-            ChatHandler(player->GetSession()).PSendSysMessage(TemucraftModuleText("mod-temucraft-classes", player->GetSession(), 1, "|cffffcc00Reagents:|r your class spells {}. Type .reagents on or "
-                ".reagents off to choose."), reagents.defaultUse ? "use their reagents" : "need no reagents");
+            ChatHandler(player->GetSession()).PSendSysMessage(TemucraftModuleText("mod-temucraft-classes", player->GetSession(), 1, "|cffffcc00Reagents:|r your class spells {}. Type .temucraft reagents on or "
+                ".temucraft reagents off to choose."), reagents.defaultUse ? "use their reagents" : "need no reagents");
     }
 
     void OnPlayerLogout(Player* player) override
@@ -133,7 +133,7 @@ public:
     {
         static ChatCommandTable commandTable =
         {
-            { "reagents", HandleReagents, SEC_PLAYER, Console::No },
+            { "temucraft reagents", HandleReagents, 102050, Console::No },
         };
         return commandTable;
     }
@@ -149,7 +149,7 @@ public:
         if (!choice || (*choice != "on" && *choice != "off"))
         {
             handler->PSendSysMessage(TemucraftModuleText("mod-temucraft-classes", handler, 3, "|cffffcc00Reagents:|r your class spells {}.{}"), UsesReagents(player) ? "use their reagents" :
-                "need no reagents", reagents.allowChoice ? " .reagents on or .reagents off changes it." : "");
+                "need no reagents", reagents.allowChoice ? " .temucraft reagents on or .temucraft reagents off changes it." : "");
             return true;
         }
         if (!reagents.allowChoice)

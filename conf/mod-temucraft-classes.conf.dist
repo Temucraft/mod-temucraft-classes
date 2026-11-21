@@ -14,7 +14,7 @@ Temucraft.Reagents.Enable = 1
 
 #
 #    Temucraft.Reagents.Default
-#        Description: Whether players who never typed .reagents on/off use reagents.
+#        Description: Whether players who never typed .temucraft reagents on/off use reagents.
 #        Default:     0 - (no reagents needed)
 #                     1 - (reagents needed)
 
@@ -22,7 +22,7 @@ Temucraft.Reagents.Default = 0
 
 #
 #    Temucraft.Reagents.AllowChoice
-#        Description: Players may choose for themselves with .reagents on|off. 0 = Default applies to everyone.
+#        Description: Players may choose for themselves with .temucraft reagents on|off. 0 = Default applies to everyone.
 #        Default:     1
 
 Temucraft.Reagents.AllowChoice = 1
@@ -41,7 +41,7 @@ Temucraft.Reagents.AllowChoice = 1
 #                       CookingFire cooking recipes need a cooking fire nearby
 #                       OtherFocus  alchemy lab, moonwell and altar of shadows recipes
 #                       Tools       recipes that need a tool in your bags (Jeweler's Kit, Simple Grinder)
-#                       SoulShards  Create Healthstone, Inferno and Soulshatter use a soul shard (with .reagents off
+#                       SoulShards  Create Healthstone, Inferno and Soulshatter use a soul shard (with .temucraft reagents off
 #                                   the reagent choice still makes them free)
 #        Default:     1 - required (as in the normal game)
 #                     0 - not required (craft anywhere / without the tool or shard)
