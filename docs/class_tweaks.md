@@ -12,7 +12,7 @@ items that stayed as they were in 3.3.5a. Everything happens on the server: no c
 
 | Change | Who | How |
 |---|---|---|
-| Spell cooldowns of your choice (none by default; Shadowmeld and other racials are in [mod-temucraft-racials](https://github.com/Temucraft/mod-temucraft-racials)) | Everyone | `Cooldowns` (any spell can be added) |
+| Spell cooldowns of your choice (none by default; Shadowmeld and other racials are in [mod-temucraft-classes](https://github.com/Temucraft/mod-temucraft-classes)) | Everyone | `Cooldowns` (any spell can be added) |
 | **Soul bags keep reagents**: an equipped soul bag has a chance not to use up a Soul Shard, Infernal Stone or Demonic Figurine (5% for a 16-slot bag up to 25% for a 32-slot one) | Warlocks | `SoulBags` |
 | **Soul Shards stack to 99**, with no limit on how many you carry | Warlocks | SQL |
 | **Infernal Stone** costs 10 silver, **Demonic Figurine** 20 silver; both fit in soul bags | Warlocks | SQL |
@@ -48,7 +48,7 @@ item cache is refreshed (delete the client's `Cache` folder after the update).
 
 ### Works with other modules
 
-- [mod-temucraft-ranged-autoattack](https://github.com/Temucraft/mod-temucraft-ranged-autoattack): its Auto Shot / Auto Throw (learned with the bow, gun, crossbow and thrown skills) is what
+- [mod-temucraft-classes](https://github.com/Temucraft/mod-temucraft-classes): its Auto Shot / Auto Throw (learned with the bow, gun, crossbow and thrown skills) is what
   other classes get with a new ranged weapon; Shoot is only taught when no attack came with the skill.
 - [mod-temucraft-threat](https://github.com/Temucraft/mod-temucraft-threat)'s pet tank happiness floor and HappyPets agree (this one just keeps pets full).
 - [mod-world-randomizer](https://github.com/TheSCREWEDSoftware/mod-world-randomizer) gives rolled proficiencies on every login; opened skills simply stay.

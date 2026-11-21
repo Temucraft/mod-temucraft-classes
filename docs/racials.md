@@ -30,7 +30,7 @@ Mountain, Brawn, Arcane Acuity, Touch of Elune...), need new client spell data a
 
 ### Works with other modules
 
-mod-temucraft-heritage: swapped and second racials get the same treatment. [mod-temucraft-class-tweaks](https://github.com/Temucraft/mod-temucraft-class-tweaks) no longer sets
+mod-temucraft-heritage: swapped and second racials get the same treatment. [mod-temucraft-classes](https://github.com/Temucraft/mod-temucraft-classes) no longer sets
 Shadowmeld's cooldown by default (its `Cooldowns` list is empty); if you set racial cooldowns there too, leave them out
 of one of the two.
 
@@ -78,7 +78,7 @@ prefix THR); without it the commands work on their own.
 
 ### Works with other modules
 
-- Other modules' cooldown or tuning changes to a racial (for example [mod-temucraft-class-tweaks](https://github.com/Temucraft/mod-temucraft-class-tweaks)' Shadowmeld) follow
+- Other modules' cooldown or tuning changes to a racial (for example [mod-temucraft-classes](https://github.com/Temucraft/mod-temucraft-classes)' Shadowmeld) follow
   the spell, so they apply to whoever carries it.
 - Spellbook tooltips are the game's own; nothing on the client changes.
 
