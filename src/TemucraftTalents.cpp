@@ -11,6 +11,7 @@
  * The rest (Heating Up, Touch of the Grave, Reckless Swings, ...) is spell data plus spell_proc rows in data/sql.
  */
 
+#include "Config.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "SpellAuraEffects.h"
@@ -30,6 +31,19 @@ namespace
 {
     constexpr uint32 SPELL_BLOOM_TALENT = 95145;
     constexpr uint32 SPELL_BLOOM_HEAL = 95146;
+
+    // Temucraft.Talents.* (see the conf)
+    struct TalentSettings
+    {
+        float bloomExpire = 1.0f, bloomDispel = 0.5f;
+        int32 spearingMultiplier = 2;
+        float arcaneWrathMana = 0.05f;
+        float vigilRange = 30.0f;
+        float energiesPetMana = 0.10f, energiesPetHeal = 0.04f;
+        float havocRange = 60.0f, havocSplash = 0.15f;
+        int32 brandPerRank = 10;
+        uint32 lingeringRageMs = 2000;
+    } talents;
 }
 
 class spell_temucraft_bloom : public AuraScript
@@ -45,7 +59,7 @@ class spell_temucraft_bloom : public AuraScript
         Unit* target = GetTarget();
         if (!caster || !target || !target->IsAlive() || !caster->HasAura(SPELL_BLOOM_TALENT))
             return;
-        int32 heal = int32(caster->GetStat(STAT_SPIRIT) * (removeMode == AURA_REMOVE_BY_EXPIRE ? 1.0f : 0.5f));
+        int32 heal = int32(caster->GetStat(STAT_SPIRIT) * (removeMode == AURA_REMOVE_BY_EXPIRE ? talents.bloomExpire : talents.bloomDispel));
         if (heal > 0)
             caster->CastCustomSpell(target, SPELL_BLOOM_HEAL, &heal, nullptr, nullptr, true);
     }
@@ -188,7 +202,7 @@ class spell_temucraft_spearing_strike : public SpellScript
         if (Creature* creature = target->ToCreature())
             bonus = bonus || creature->GetCreatureType() == CREATURE_TYPE_GIANT || creature->GetCreatureType() == CREATURE_TYPE_DRAGONKIN;
         if (bonus)
-            SetHitDamage(GetHitDamage() * 2);
+            SetHitDamage(GetHitDamage() * talents.spearingMultiplier);
         if (target->IsMounted())
         {
             target->RemoveAurasByType(SPELL_AURA_MOUNTED);
@@ -209,7 +223,7 @@ class spell_temucraft_arcane_wrath : public SpellScript
 
     void HandleHit()
     {
-        SetHitDamage(GetHitDamage() + int32(GetCaster()->GetMaxPower(POWER_MANA) * 0.05f));
+        SetHitDamage(GetHitDamage() + int32(GetCaster()->GetMaxPower(POWER_MANA) * talents.arcaneWrathMana));
     }
 
     void Register() override
@@ -239,7 +253,7 @@ class spell_temucraft_lights_vigil : public SpellScript
         {
             Player* member = ref->GetSource();
             if (member && member != target && member->IsAlive() && member->IsInMap(target) &&
-                group->SameSubGroup(targetPlayer, member) && member->GetDistance(target) <= 30.0f)
+                group->SameSubGroup(targetPlayer, member) && member->GetDistance(target) <= talents.vigilRange)
                 caster->CastSpell(member, SPELL_LIGHTS_VIGIL_HEAL, true);
         }
     }
@@ -338,7 +352,7 @@ class spell_temucraft_demonic_energies_tap : public SpellScript
         int32 rank = TalentRank(player, SPELLS_DEMONIC_ENERGIES, 2);
         Pet* pet = player->GetPet();
         if (rank && pet && pet->IsAlive() && pet->GetMaxPower(POWER_MANA))
-            pet->ModifyPower(POWER_MANA, int32(pet->GetMaxPower(POWER_MANA) * 0.10f * rank));
+            pet->ModifyPower(POWER_MANA, int32(pet->GetMaxPower(POWER_MANA) * talents.energiesPetMana * rank));
     }
 
     void Register() override
@@ -366,9 +380,9 @@ public:
         if (itr != HavocTargets.end() && itr->second != victim->GetGUID())
         {
             Unit* cursed = ObjectAccessor::GetUnit(*player, itr->second);
-            if (cursed && cursed->IsAlive() && cursed->IsInMap(player) && cursed->GetDistance(player) <= 60.0f)
+            if (cursed && cursed->IsAlive() && cursed->IsInMap(player) && cursed->GetDistance(player) <= talents.havocRange)
             {
-                int32 splash = int32(damage * 0.15f);
+                int32 splash = int32(damage * talents.havocSplash);
                 if (splash > 0)
                     player->CastCustomSpell(cursed, SPELL_BANE_OF_HAVOC_DAMAGE, &splash, nullptr, nullptr, true);
             }
@@ -378,7 +392,7 @@ public:
             Pet* pet = player->GetPet();
             if (pet && pet != victim && pet->IsAlive() && !pet->IsFullHealth())
             {
-                int32 heal = int32(damage * 0.04f * rank);
+                int32 heal = int32(damage * talents.energiesPetHeal * rank);
                 if (heal > 0)
                     player->CastCustomSpell(pet, SPELL_DEMONIC_ENERGIES_HEAL, &heal, nullptr, nullptr, true);
             }
@@ -412,7 +426,7 @@ private:
             if (Aura* aura = target->GetAura(SPELLS_DEMONIC_BRAND[i - 1], owner->GetGUID()))
             {
                 aura->DropCharge();
-                return int32(i) * 10;
+                return int32(i) * talents.brandPerRank;
             }
         return 0;
     }
@@ -439,7 +453,7 @@ public:
         }
         int32 rank = TalentRank(player, SPELLS_LINGERING_RAGE, 5);
         // only undo the natural decay (2 rage a tick), never rage spent on abilities
-        if (rank && now - state.leftCombat < uint32(rank) * 2000 && rage < state.rage && state.rage - rage <= 20)
+        if (rank && now - state.leftCombat < uint32(rank) * talents.lingeringRageMs && rage < state.rage && state.rage - rage <= 20)
             player->SetPower(POWER_RAGE, state.rage);
         else
             state.rage = rage;
@@ -454,8 +468,30 @@ private:
     std::unordered_map<ObjectGuid::LowType, State> _states;
 };
 
+class TemucraftTalents_World : public WorldScript
+{
+public:
+    TemucraftTalents_World() : WorldScript("TemucraftTalents_World", { WORLDHOOK_ON_AFTER_CONFIG_LOAD }) { }
+
+    void OnAfterConfigLoad(bool /*reload*/) override
+    {
+        talents.bloomExpire = sConfigMgr->GetOption<float>("Temucraft.Talents.Bloom.SpiritPercent", 100.0f) / 100.0f;
+        talents.bloomDispel = sConfigMgr->GetOption<float>("Temucraft.Talents.Bloom.DispelledSpiritPercent", 50.0f) / 100.0f;
+        talents.spearingMultiplier = sConfigMgr->GetOption<int32>("Temucraft.Talents.SpearingStrike.Multiplier", 2);
+        talents.arcaneWrathMana = sConfigMgr->GetOption<float>("Temucraft.Talents.ArcaneWrath.ManaPercent", 5.0f) / 100.0f;
+        talents.vigilRange = sConfigMgr->GetOption<float>("Temucraft.Talents.LightsVigil.Range", 30.0f);
+        talents.energiesPetMana = sConfigMgr->GetOption<float>("Temucraft.Talents.DemonicEnergies.PetManaPercent", 10.0f) / 100.0f;
+        talents.energiesPetHeal = sConfigMgr->GetOption<float>("Temucraft.Talents.DemonicEnergies.PetHealPercent", 4.0f) / 100.0f;
+        talents.havocRange = sConfigMgr->GetOption<float>("Temucraft.Talents.BaneOfHavoc.Range", 60.0f);
+        talents.havocSplash = sConfigMgr->GetOption<float>("Temucraft.Talents.BaneOfHavoc.SplashPercent", 15.0f) / 100.0f;
+        talents.brandPerRank = sConfigMgr->GetOption<int32>("Temucraft.Talents.DemonicBrand.PercentPerRank", 10);
+        talents.lingeringRageMs = sConfigMgr->GetOption<uint32>("Temucraft.Talents.LingeringRage.SecondsPerRank", 2) * IN_MILLISECONDS;
+    }
+};
+
 void AddTemucraftTalentsScripts()
 {
+    new TemucraftTalents_World();
     new TemucraftTalents_Player();
     RegisterSpellScript(spell_temucraft_bloom);
     RegisterSpellScript(spell_temucraft_templars_bulwark);

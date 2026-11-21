@@ -52,3 +52,80 @@ Temucraft.Requirements.CookingFire = 1
 Temucraft.Requirements.OtherFocus = 1
 Temucraft.Requirements.Tools = 1
 Temucraft.Requirements.SoulShards = 1
+
+#
+#    Temucraft.Talents.Bloom.SpiritPercent
+#        Description: Bloom heal when it runs out, in percent of the druid's Spirit.
+#        Default:     100
+
+Temucraft.Talents.Bloom.SpiritPercent = 100
+
+#
+#    Temucraft.Talents.Bloom.DispelledSpiritPercent
+#        Description: Bloom heal when it is dispelled by an enemy, in percent of the druid's Spirit.
+#        Default:     50
+
+Temucraft.Talents.Bloom.DispelledSpiritPercent = 50
+
+#
+#    Temucraft.Talents.SpearingStrike.Multiplier
+#        Description: Damage multiplier of Spearing Strike against mounted targets, giants and dragonkin.
+#        Default:     2
+
+Temucraft.Talents.SpearingStrike.Multiplier = 2
+
+#
+#    Temucraft.Talents.ArcaneWrath.ManaPercent
+#        Description: Extra Arcane Wrath damage, in percent of the caster's maximum mana.
+#        Default:     5
+
+Temucraft.Talents.ArcaneWrath.ManaPercent = 5
+
+#
+#    Temucraft.Talents.LightsVigil.Range
+#        Description: Yards from the target that Light's Vigil also heals party members.
+#        Default:     30
+
+Temucraft.Talents.LightsVigil.Range = 30
+
+#
+#    Temucraft.Talents.DemonicEnergies.PetManaPercent
+#        Description: Pet mana Life Tap restores per Demonic Energies rank, in percent.
+#        Default:     10
+
+Temucraft.Talents.DemonicEnergies.PetManaPercent = 10
+
+#
+#    Temucraft.Talents.DemonicEnergies.PetHealPercent
+#        Description: Warlock damage that heals the pet per Demonic Energies rank, in percent.
+#        Default:     4
+
+Temucraft.Talents.DemonicEnergies.PetHealPercent = 4
+
+#
+#    Temucraft.Talents.BaneOfHavoc.Range
+#        Description: Yards from the warlock that the Bane of Havoc target still takes splash damage.
+#        Default:     60
+
+Temucraft.Talents.BaneOfHavoc.Range = 60
+
+#
+#    Temucraft.Talents.BaneOfHavoc.SplashPercent
+#        Description: Warlock damage copied to the Bane of Havoc target, in percent.
+#        Default:     15
+
+Temucraft.Talents.BaneOfHavoc.SplashPercent = 15
+
+#
+#    Temucraft.Talents.DemonicBrand.PercentPerRank
+#        Description: Extra pet damage against a branded target per Demonic Brand rank, in percent.
+#        Default:     10
+
+Temucraft.Talents.DemonicBrand.PercentPerRank = 10
+
+#
+#    Temucraft.Talents.LingeringRage.SecondsPerRank
+#        Description: Seconds out of combat that rage decay waits per Lingering Rage rank.
+#        Default:     2
+
+Temucraft.Talents.LingeringRage.SecondsPerRank = 2
