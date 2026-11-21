@@ -129,3 +129,12 @@ Temucraft.Talents.DemonicBrand.PercentPerRank = 10
 #        Default:     2
 
 Temucraft.Talents.LingeringRage.SecondsPerRank = 2
+
+#
+#    Temucraft.SpellInfo.Enable
+#        Description: Answer the client's spell tooltip questions: your bonuses (damage, cooldown, cost, cast
+#                     time), the talents and other effects that change the spell, and its crit chance and crit
+#                     damage (TemucraftSpellInfo.lua in the mod-temucraft-client-version patch, addon prefix TSI).
+#        Default:     1
+
+Temucraft.SpellInfo.Enable = 1
