@@ -54,6 +54,15 @@ Temucraft.Requirements.Tools = 1
 Temucraft.Requirements.SoulShards = 1
 
 #
+#    Temucraft.Talents.FirstLevel
+#        Description: Level of the first talent point; one more every level after it (the core starts at 10).
+#                     The core then multiplies by Rate.Talent in worldserver.conf (Temucraft: 1.5, about two full
+#                     trees at level 80). 0 or 10 and higher = the core's normal points.
+#        Default:     2
+
+Temucraft.Talents.FirstLevel = 2
+
+#
 #    Temucraft.Talents.Bloom.SpiritPercent
 #        Description: Bloom heal when it runs out, in percent of the druid's Spirit.
 #        Default:     100

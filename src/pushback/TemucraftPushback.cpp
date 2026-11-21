@@ -11,12 +11,14 @@
 //  2 Classic: every hit pushes back, with no limit, and a cast loses Classic.CastDelay ms a hit (1 second by default).
 // Works from the damage hook, which runs before the core applies its pushback, and from the player update,
 // which adds the extra classic delay after the core has decided that a hit pushes the cast back.
+// A player can pick his own rule in mod-temucraft-player-settings (.temucraft settings); otherwise the server's applies.
 
 #include "Config.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "Spell.h"
 #include "SpellInfo.h"
+#include "TemucraftPlayerSettings.h"
 #include "WorldPacket.h"
 
 namespace
@@ -79,13 +81,16 @@ public:
 
     void OnDamage(Unit* attacker, Unit* victim, uint32& damage) override
     {
-        if (cfg.mode == 1 || !victim || victim == attacker || !damage)
+        if (!victim || victim == attacker || !damage)
             return;
         if (!victim->IsPlayer())
             return;   // the core only pushes players back
+        int32 mode = TemucraftPlayerPushbackMode(victim->ToPlayer(), int32(cfg.mode));
+        if (mode == 1)
+            return;
         Spell* cast = victim->GetCurrentSpell(CURRENT_GENERIC_SPELL);
         Spell* channel = victim->GetCurrentSpell(CURRENT_CHANNELED_SPELL);
-        if (cfg.mode == 0)
+        if (mode == 0)
         {
             // the core skips pushback once a spell has been pushed back twice
             if (cast) cast->*SpellAccess::Count() = 2;
@@ -110,7 +115,7 @@ public:
     // It raises the count from 0 to 1 when it runs, so the extra classic delay is added here, after the core decided.
     void OnPlayerUpdate(Player* player, uint32 /*diff*/) override
     {
-        if (cfg.mode != 2)
+        if (TemucraftPlayerPushbackMode(player, int32(cfg.mode)) != 2)
             return;
         if (Spell* cast = player->GetCurrentSpell(CURRENT_GENERIC_SPELL))
             ApplyClassicExtra(player, cast);

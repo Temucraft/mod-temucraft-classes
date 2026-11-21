@@ -10,6 +10,8 @@ Choose how damage pushes back a player's spells (`Temucraft.Pushback.Mode` in `m
 
 - Talents, auras and items that reduce pushback (Concentration Aura, Burning Soul and the like) still work in every mode.
 - Spells that never get pushed back (Slam, bombs) stay that way. As in the core, only players are pushed back.
+- Players can pick their own rule (Vanilla/TBC = Classic, Wrath, Retail = Off) in mod-temucraft-player-settings
+  (`.temucraft settings`); players who don't pick get the server's mode.
 - Server side only: the client follows the server's cast bar, so no client change is needed.
 
 Install: put the folder in `modules/`, re-run CMake, build, and copy the conf file. `.reload config` picks up a new mode.
