@@ -25,6 +25,8 @@
 #include "SpellScript.h"
 #include "SpellScriptLoader.h"
 #include "TemucraftNewSpellsIds.h"
+#include "WorldPacket.h"
+#include "WorldSession.h"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -125,6 +127,13 @@ class spell_temucraft_slap : public SpellScript
         if (target->getStandState() == UNIT_STAND_STATE_SLEEP)
             target->SetStandState(UNIT_STAND_STATE_STAND);
         target->HandleEmoteCommand(EMOTE_ONESHOT_WOUND);
+        // the caster does /slap at the target: its animation, sound and "slaps you across the face" line
+        if (Player* player = caster->ToPlayer())
+        {
+            WorldPacket emote(CMSG_TEXT_EMOTE, 4 + 4 + 8);
+            emote << uint32(TEXT_EMOTE_SLAP) << uint32(0) << target->GetGUID();
+            player->GetSession()->HandleTextEmoteOpcode(emote);
+        }
         if (!caster->IsFriendlyTo(target) && caster->IsValidAttackTarget(target))
             caster->AttackerStateUpdate(target, BASE_ATTACK, true);
     }

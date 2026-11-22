@@ -53,6 +53,7 @@ def build(dbc, base):
     s[C['PowerType']] = 0                        # mana
     s[C['ManaCostPct']] = 5                      # 5% of base mana
     s[C['RangeIndex']] = 2                       # melee range
+    s[C['EquippedItemClass']] = -1               # no item needed (0 would mean a consumable: "Must have a %s equipped")
     s[C['Effect_1']] = 3                         # dummy: the script wakes the target and attacks enemies
     s[C['ImplicitTargetA_1']] = 25               # any unit (friend or foe)
     s[C['SpellIconID']] = src[C['SpellIconID']]
