@@ -16,6 +16,7 @@
 //   prefix THR).
 // - Rules in the config: minimum level, price, how long before changing again, same faction only.
 
+#include "TemucraftLocked.h"
 #include "Chat.h"
 #include "CommandScript.h"
 #include "Config.h"
@@ -73,10 +74,10 @@ namespace
     // Second racials: racials of races nobody can play here, one (or more) of which a player may carry on top.
     struct Bonus { uint32 spell; std::string name; };
     std::vector<Bonus> bonusPool;
-    std::unordered_map<uint32, std::vector<uint32>> bonusChosen;   // player guid -> chosen bonus spells
+    Temucraft::LockedMap<uint32, std::vector<uint32>> bonusChosen;   // player guid -> chosen bonus spells
 
     struct Choice { uint8 race = 0; uint32 changed = 0; };
-    std::unordered_map<uint32, Choice> choices;      // player guid -> heritage (race 0 = their own)
+    Temucraft::LockedMap<uint32, Choice> choices;      // player guid -> heritage (race 0 = their own)
 
     // Secondary skill lines that are no racials although every race may get them.
     bool IsProfessionLine(uint32 skill) { return skill == 129 || skill == 185 || skill == 356 || skill == 762; }

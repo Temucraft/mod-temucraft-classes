@@ -9,6 +9,7 @@
 // demonic figurine, bows for night elf priests, any weapon (and armor) for every race and class, raid-wide auras and
 // shouts, hour-long class buffs and hunter pets that are always happy.
 
+#include "TemucraftLocked.h"
 #include "Bag.h"
 #include "Chat.h"
 #include "Config.h"
@@ -503,7 +504,7 @@ public:
     }
 
 private:
-    std::unordered_map<uint32, uint32> petTimers;
+    Temucraft::LockedMap<uint32, uint32> petTimers;
 };
 
 // Tranquility: of the raid members in reach, heal the most injured few (the party-wide spell made raid-wide).

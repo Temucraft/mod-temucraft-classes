@@ -11,6 +11,7 @@
  * The rest (Heating Up, Touch of the Grave, Reckless Swings, ...) is spell data plus spell_proc rows in data/sql.
  */
 
+#include "TemucraftLocked.h"
 #include "Config.h"
 #include "Player.h"
 #include "ScriptMgr.h"
@@ -113,7 +114,7 @@ public:
     }
 
 private:
-    std::unordered_map<ObjectGuid::LowType, uint32> _timers;
+    Temucraft::LockedMap<ObjectGuid::LowType, uint32> _timers;
 
     static void Toggle(Player* player, uint32 spell, bool on, int32 amount)
     {
@@ -155,7 +156,7 @@ namespace
         return 0;
     }
 
-    std::unordered_map<ObjectGuid, ObjectGuid> HavocTargets; // warlock -> cursed target
+    Temucraft::LockedMap<ObjectGuid, ObjectGuid> HavocTargets; // warlock -> cursed target
 }
 
 // Predatory Discipline: Ferocious Bite gives back the extra Energy it took (the damage was already counted)
@@ -465,7 +466,7 @@ private:
         uint32 leftCombat = 0;
         uint32 rage = 0;
     };
-    std::unordered_map<ObjectGuid::LowType, State> _states;
+    Temucraft::LockedMap<ObjectGuid::LowType, State> _states;
 };
 
 class TemucraftTalents_World : public WorldScript

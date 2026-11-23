@@ -31,6 +31,7 @@
 //   enslaved demon (30% attack and casting speed for 15 sec, at the cost of 10% of its health).
 // (Holy Shock already reaches allies at 40 yards and Expose Armor already lasts longer per combo point in 3.3.5.)
 
+#include "TemucraftLocked.h"
 #include "CellImpl.h"
 #include "Chat.h"
 #include "Config.h"
@@ -114,10 +115,10 @@ namespace
         int32 empowermentCost = 10;
         float holyFireDirect = 1.1f, holyFireDot = 1.4f;
     } cfg;
-    std::unordered_map<ObjectGuid, std::unordered_set<ObjectGuid>> lightwellDrinkers;
+    Temucraft::LockedMap<ObjectGuid, std::unordered_set<ObjectGuid>> lightwellDrinkers;
 
-    std::unordered_set<uint32> ourWaterWalk;            // players walking on water through Ghost Wolf
-    std::unordered_map<ObjectGuid, uint32> totemTimers;
+    Temucraft::LockedSet<uint32> ourWaterWalk;            // players walking on water through Ghost Wolf
+    Temucraft::LockedMap<ObjectGuid, uint32> totemTimers;
 
     void LoadSettings()
     {
