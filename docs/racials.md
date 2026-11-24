@@ -38,6 +38,13 @@ of one of the two.
 
 Copy the module into `modules/`, re-run CMake and build. No SQL.
 
+### Fixes for custom race racials
+
+`mod_temucraft_racials_fixes.sql` gives custom race racials that copy a stock racial what the stock one has: Make Camp
+(Vulpera) gets Cannibalize's script, Spatial Rift (Void Elf) and Cantrips (Nightborne) get Shadowmeld's linked
+Sanctuary and deselect, and Azerite Surge (Earthen) gets Stoneform's armor buff. The spell ids are those of
+mod-worgoblin-high-elf (`modpaks/config.sql`).
+
 ## From mod-temucraft-heritage
 
 
