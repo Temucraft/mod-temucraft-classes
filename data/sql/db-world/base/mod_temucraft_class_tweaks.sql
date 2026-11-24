@@ -34,6 +34,10 @@ WHERE ts.`SpellId` IN (196, 197, 198, 199, 200, 201, 202, 227, 264, 266, 1180, 2
 -- Parachute: every class trainer teaches it from level 10, for 10 silver. Its cooldown shrinks with level (config).
 INSERT IGNORE INTO `trainer_spell` (`TrainerId`, `SpellId`, `MoneyCost`, `ReqSkillLine`, `ReqSkillRank`, `ReqAbility1`, `ReqAbility2`, `ReqAbility3`, `ReqLevel`, `VerifiedBuild`)
 SELECT `Id`, 55001, 1000, 0, 0, 0, 0, 0, 10, -1811 FROM `trainer` WHERE `Type` = 0;
+-- The stock script on it (spell_item_flexweave_underlay) refuses the cast unless you are already falling; ours lets
+-- it be opened before a jump too (the slow fall ends when you land).
+DELETE FROM `spell_script_names` WHERE `spell_id` = 55001 AND `ScriptName` IN ('spell_item_flexweave_underlay', 'spell_temucraft_parachute');
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES (55001, 'spell_temucraft_parachute');
 
 -- Player-facing texts. Translations go in module_string_locale (same module and id, plus the locale).
 DELETE FROM `module_string` WHERE `module` = 'mod-temucraft-class-tweaks';

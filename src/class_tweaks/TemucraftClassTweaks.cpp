@@ -529,9 +529,30 @@ class spell_temucraft_tranquility : public SpellScript
     }
 };
 
+// Parachute (55001): the stock script only lets it be cast while falling, so pressing it on a ledge before the jump
+// failed with "Can't do that right now". Here it can be cast any time: the slow fall then lasts until you land
+// (or its duration runs out), so it can be opened before a jump too. Not while swimming.
+class spell_temucraft_parachute : public SpellScript
+{
+    PrepareSpellScript(spell_temucraft_parachute);
+
+    SpellCastResult CheckCast()
+    {
+        if (GetCaster()->IsInWater())
+            return SPELL_FAILED_ONLY_ABOVEWATER;
+        return SPELL_CAST_OK;
+    }
+
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_temucraft_parachute::CheckCast);
+    }
+};
+
 void AddTemucraftClassTweaksScripts()
 {
     RegisterSpellScript(spell_temucraft_tranquility);
+    RegisterSpellScript(spell_temucraft_parachute);
     new TemucraftClassTweaksWorld();
     new TemucraftClassTweaksPlayer();
     new TemucraftClassTweaksSpells();
