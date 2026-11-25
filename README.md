@@ -23,7 +23,7 @@ Class changes: new talents and their scripts, new racials, and reagents as a pla
 | world | `spell_dbc` | 95041-95048, 95100-95271 (new), plus 120 stock class spells with reagents back |
 | world | `talent_dbc` | 2286-2342 |
 | world | `skilllineability_dbc` | 31798, 31800-31806 (racials) |
-| world | `spell_ranks`, `spell_proc`, `spell_script_names` | for the spells above |
+| world | `spell_ranks`, `spell_proc`, `spell_script_names` | for the spells above (Swift Judgement 95259 uses the stock `spell_pal_judgement_of_light`: it judges the seal; its 1 min cooldown is its own) |
 | world | `creature_template` (+`_model`) | 601990 (Summon Hawk) |
 | characters | `mod_temucraft_character_setting` (setting `reagents`) | per character |
 | characters | `mod_temucraft_classes_pet_grant` | one row per hunter or warlock already given its starting pet |
