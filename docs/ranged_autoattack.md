@@ -21,7 +21,23 @@ The hunter's right-click Auto Shot, for every class and every ranged weapon.
    RangedAutoAttack.WhileMoving = 1    # keep firing while moving
    ```
 
-   The module logs a warning at startup when `LikeAutoShot` is off.
+   The module logs one notice at startup while `LikeAutoShot` is missing or off.
+
+   What the core change has to do (checked 2026-11-25: none of it is in the core; neither key is read anywhere under
+   `src/server` or listed in `worldserver.conf.dist`). The core only spares Auto Shot by its spell id 75:
+   - `World`: read the two keys (`CONFIG_RANGED_AUTOATTACK_LIKE_AUTOSHOT`, `CONFIG_RANGED_AUTOATTACK_WHILE_MOVING`) and add
+     them to `worldserver.conf.dist`;
+   - `Unit::_UpdateAutoRepeatSpell` (`Unit.cpp`, `HUNTER_AUTOSHOOT`): with LikeAutoShot, treat every auto-repeat ranged
+     spell like 75 (no cancel while moving or casting, only a pause; no 0.5 s first-shot delay); with WhileMoving, skip
+     the `isMoving()` check;
+   - `Unit::SetCurrentCastedSpell` (`Unit.cpp`, the three `Id != 75` tests): don't interrupt the auto-repeat spell
+     when a generic or channelled spell starts, and don't let it break channels;
+   - `Spell::prepare` (`Spell.cpp`, `IsNonMeleeSpellCast(..., Id == 75)` and the two
+     `RemoveAurasWithInterruptFlags(..., Id == 75)`): the same exception for every auto-repeat ranged spell;
+   - `Player::AddSpellAndCategoryCooldowns` (`Player.cpp`, `IsAutoRepeatRangedSpell() && Id != 75`): the same;
+
+   - `Spell::CheckCast` (`SPELL_FAILED_MOVING` for `IsAutoRepeat()`): with WhileMoving, allow it while moving.
+
 3. Optional: `EnablePlayerSettings = 1` in worldserver.conf, so `.temucraft rangedauto` choices are kept after logout.
 
 ## Commands (any player)

@@ -261,9 +261,13 @@ public:
         if (!settings.Enable)
             return;
 
+        // RangedAutoAttack.LikeAutoShot belongs to a core change that this core doesn't have yet (the core still
+        // special-cases spell 75 only; see docs/ranged_autoattack.md). Without it the module still works: the new
+        // auto-attacks just stop on moving and casting like the stock wand Shoot. Said once, at startup.
         if (!sConfigMgr->GetOption<bool>("RangedAutoAttack.LikeAutoShot", false, false))
-            LOG_WARN("module", "mod-temucraft-ranged-autoattack: RangedAutoAttack.LikeAutoShot is off in worldserver.conf, so wand Shoot, "
-                "Auto Throw and the other new auto-attacks are cancelled by casting and moving instead of pausing.");
+            LOG_INFO("module", "mod-temucraft-ranged-autoattack: no core support for RangedAutoAttack.LikeAutoShot (core change not applied, "
+                "see docs/ranged_autoattack.md): wand Shoot, Auto Throw and Auto Shot 95002 stop on moving and casting instead of pausing.");
+
 
         if (!sConfigMgr->GetOption<bool>("EnablePlayerSettings", false, false))
             LOG_INFO("module", "mod-temucraft-ranged-autoattack: EnablePlayerSettings is off, so .temucraft rangedauto choices last until logout.");

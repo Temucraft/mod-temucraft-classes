@@ -92,7 +92,6 @@ namespace
            SPELL_OVERWHELMING_LIGHT = 96403, SPELL_EMPOWERED_INFERNAL = 96404, SPELL_EMPOWERED_THRALL = 96405;
     constexpr uint32 NPC_INFERNAL = 89, NPC_DOOMGUARD = 11859;
     constexpr uint32 TALENT_TAB_HOLY_PALADIN = 382;
-    std::unordered_set<uint32> const LIGHTWELLS = { 31883, 31893, 31894, 31895, 31896, 31897 };
     std::unordered_map<uint32, uint32> const LIGHTWELL_RENEW = { { 31897, 7001 }, { 31896, 27873 }, { 31895, 27874 },
                                                                  { 31894, 28276 }, { 31893, 48084 }, { 31883, 48085 } };
 
@@ -115,10 +114,15 @@ namespace
         int32 empowermentCost = 10;
         float holyFireDirect = 1.1f, holyFireDot = 1.4f;
     } cfg;
-    Temucraft::LockedMap<ObjectGuid, std::unordered_set<ObjectGuid>> lightwellDrinkers;
+    // Per-creature state is kept on the creature itself (Object::CustomData): creature guids repeat across maps and
+    // instance copies, so a global map keyed by them mixes up two Lightwells or totems. A creature's data is only
+    // touched from its own map's update thread, and goes away with the creature.
+    struct LightwellDrinkers : DataMap::Base { std::unordered_set<ObjectGuid> players; };
+    struct SentryTimer : DataMap::Base { uint32 ms = 0; };
+    constexpr char const* LIGHTWELL_KEY = "temucraft_lightwell_drinkers";
+    constexpr char const* SENTRY_KEY = "temucraft_sentry_timer";
 
     Temucraft::LockedSet<uint32> ourWaterWalk;            // players walking on water through Ghost Wolf
-    Temucraft::LockedMap<ObjectGuid, uint32> totemTimers;
 
     void LoadSettings()
     {
@@ -438,7 +442,7 @@ public:
     {
         if (c->GetEntry() != NPC_SENTRY_TOTEM || !cfg.enable || cfg.sentryRadius <= 0.0f || !c->IsAlive())
             return;
-        uint32& timer = totemTimers[c->GetGUID()];
+        uint32& timer = c->CustomData.GetDefault<SentryTimer>(SENTRY_KEY)->ms;
         timer += diff;
         if (timer < 1000)
             return;
@@ -452,14 +456,6 @@ public:
             u->RemoveAurasByType(SPELL_AURA_MOD_STEALTH);
             u->RemoveAurasByType(SPELL_AURA_MOD_INVISIBILITY);
         }
-    }
-
-    void OnCreatureRemoveWorld(Creature* c) override
-    {
-        if (c->GetEntry() == NPC_SENTRY_TOTEM)
-            totemTimers.erase(c->GetGUID());
-        else if (LIGHTWELLS.count(c->GetEntry()))
-            lightwellDrinkers.erase(c->GetGUID());
     }
 };
 
@@ -479,7 +475,8 @@ class spell_temucraft_lightwell : public SpellScript
         auto renew = LIGHTWELL_RENEW.find(well->GetEntry());
         if (renew == LIGHTWELL_RENEW.end())
             return;
-        if (cfg.enable && cfg.lightwellCharges && !lightwellDrinkers[well->GetGUID()].insert(target->GetGUID()).second)
+        if (cfg.enable && cfg.lightwellCharges && !well->CustomData.GetDefault<LightwellDrinkers>(LIGHTWELL_KEY)->players.insert(target->GetGUID()).second)
+
         {
             if (Player* p = target->ToPlayer())
                 ChatHandler(p->GetSession()).SendNotification("You have already drunk from this Lightwell.");
