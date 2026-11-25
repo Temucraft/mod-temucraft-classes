@@ -300,7 +300,7 @@ namespace
         }
 
         settings.parachute.clear();
-        std::string steps = sConfigMgr->GetOption<std::string>("Temucraft.ClassTweaks.Parachute", "10:600 20:480 30:360 40:300 50:240 60:180 70:150 80:120");
+        std::string steps = sConfigMgr->GetOption<std::string>("Temucraft.ClassTweaks.Parachute", "10:600 20:480 30:360 40:240 50:120 60:60");
         std::replace(steps.begin(), steps.end(), ',', ' ');
         std::istringstream stepIn(steps);
         std::string step;
