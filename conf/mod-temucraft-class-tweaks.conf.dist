@@ -151,6 +151,8 @@ Temucraft.ClassReworks.SliceAndDiceBleeds = 1
 #    Temucraft.ClassChanges.LightwellCharges       Lightwell charges, one drink per player (0 = as normal). Restart. 15
 #    Temucraft.ClassChanges.Banes                  Agony, Doom, Tongues, Exhaustion are banes: one bane + one curse. Restart. 1
 #    Temucraft.ClassChanges.DemonicEmpowerment     Also empowers Infernal, Doomguard and an enslaved demon. 1
+#    Temucraft.ClassChanges.StartingPetGrant.Enable  Once per character, on login: warlocks without Summon Imp learn it, hunters
+#                                           with no pet at all (stable included) get their race's starting pet (F-128). 1
 
 Temucraft.ClassChanges.Enable = 1
 Temucraft.ClassChanges.WeaponMasteries = 1
@@ -169,6 +171,7 @@ Temucraft.ClassChanges.HolyFire = 1
 Temucraft.ClassChanges.LightwellCharges = 15
 Temucraft.ClassChanges.Banes = 1
 Temucraft.ClassChanges.DemonicEmpowerment = 1
+Temucraft.ClassChanges.StartingPetGrant.Enable = 1
 
 ########################################
 # New class spells (TemucraftNewClassSpells.cpp)
