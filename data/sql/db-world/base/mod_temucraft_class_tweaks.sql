@@ -38,6 +38,9 @@ SELECT `Id`, 55001, 1000, 0, 0, 0, 0, 0, 10, -1811 FROM `trainer` WHERE `Type` =
 -- it be opened before a jump too (the slow fall ends when you land).
 DELETE FROM `spell_script_names` WHERE `spell_id` = 55001 AND `ScriptName` IN ('spell_item_flexweave_underlay', 'spell_temucraft_parachute');
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES (55001, 'spell_temucraft_parachute');
+-- The core's conditions row for the engineering cloak (Flexweave Underlay) asks for Engineering 350 before 55001 can be
+-- cast, so for everyone else the cast silently failed. The trainer spell is for all classes: no skill needed.
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 17 AND `SourceEntry` = 55001 AND `ConditionTypeOrReference` = 7 AND `ConditionValue1` = 202;
 
 -- Player-facing texts. Translations go in module_string_locale (same module and id, plus the locale).
 DELETE FROM `module_string` WHERE `module` = 'mod-temucraft-class-tweaks';
