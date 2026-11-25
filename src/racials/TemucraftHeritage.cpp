@@ -98,6 +98,11 @@ namespace
         uint32 id;
         while (in >> id)
             settings.bonusExclude.insert(id);
+        // The racial heals (TemucraftClassChanges.cpp teaches each race its own) carry the "Racial" rank but no skill
+        // line, so they looked like racials of an unplayable race: ApplyBonus took them away again on every login.
+        uint32 const healFirst = sConfigMgr->GetOption<uint32>("Temucraft.ClassTweaks.RacialHeals.SpellFirst", 100172);
+        for (uint32 i = 0; i < 16; ++i)
+            settings.bonusExclude.insert(healFirst + i);
     }
 
     bool IsRacialRank(SpellInfo const* info)
