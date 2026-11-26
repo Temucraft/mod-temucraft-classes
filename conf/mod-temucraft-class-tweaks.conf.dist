@@ -57,6 +57,13 @@
 #        Description: Parachute (every class trainer teaches it from level 10): its cooldown by level, as
 #                     "level:seconds" steps. The highest step reached counts. Empty = the spell's own 1 minute.
 #        Default:     "10:600 20:480 30:360 40:240 50:120 60:60"
+#
+#    Temucraft.ClassTweaks.Parachute.ReadyMinutes
+#        Description: Parachute in two phases: pressed on the ground it is "ready" for this many minutes (no slow
+#                     fall, no cooldown yet) and opens by itself when you start to fall; the cooldown starts when it
+#                     opens. Pressed while falling it opens at once. 0 = it opens when pressed (one phase).
+#                     Changing 0 <-> not 0 needs a restart (the aura's landing interrupt is set at startup).
+#        Default:     5
 
 Temucraft.ClassTweaks.Enable = 1
 Temucraft.ClassTweaks.Cooldowns = ""
@@ -70,6 +77,7 @@ Temucraft.ClassTweaks.RaidWideAuras = 1
 Temucraft.ClassTweaks.BuffMinutes = 60
 Temucraft.ClassTweaks.HappyPets = 1
 Temucraft.ClassTweaks.Parachute = "10:600 20:480 30:360 40:240 50:120 60:60"
+Temucraft.ClassTweaks.Parachute.ReadyMinutes = 5
 
 #
 #    Temucraft.ClassTweaks.NoDaze

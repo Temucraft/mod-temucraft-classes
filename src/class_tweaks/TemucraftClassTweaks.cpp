@@ -61,6 +61,7 @@ namespace
         std::unordered_set<uint32> noDaze;              // daze spells that do nothing
         bool smartTranquility = true;
         std::vector<std::pair<uint8, uint32>> parachute;   // from level -> cooldown in ms, by level
+        uint32 parachuteReadyMs = 5 * MINUTE * IN_MILLISECONDS;   // Parachute ready (two phases); 0 = opens at once
     } settings;
 
     // Parachute (taught by every class trainer from level 10): its cooldown shrinks as the player levels.
@@ -223,6 +224,11 @@ namespace
             return;
         }
 
+        // Parachute in two phases (spell_temucraft_parachute): the ready aura must outlive a jump's landing, so the
+        // landing ends the open parachute in the script instead of by the aura's interrupt flag.
+        if (spell->Id == SPELL_PARACHUTE && settings.parachuteReadyMs)
+            spell->AuraInterruptFlags &= ~AURA_INTERRUPT_FLAG_LANDING;
+
         // Tranquility heals the raid: the 5 most injured within reach every tick (see spell script below).
         if (settings.smartTranquility && TRANQUILITY_HEALS.count(spell->Id))
             for (SpellEffectInfo& effect : spell->_GetEffects())
@@ -316,6 +322,8 @@ namespace
             settings.parachute.emplace_back(uint8(level), uint32(seconds * IN_MILLISECONDS));
         }
         std::sort(settings.parachute.begin(), settings.parachute.end());
+        settings.parachuteReadyMs = std::min<uint32>(sConfigMgr->GetOption<uint32>("Temucraft.ClassTweaks.Parachute.ReadyMinutes", 5), 60)
+            * MINUTE * IN_MILLISECONDS;
 
         // "58984:60 12345:90": spell id and cooldown in seconds, separated by spaces or commas.
         settings.cooldowns.clear();
@@ -355,17 +363,40 @@ namespace
         return settings.soulBagMinChance + (settings.soulBagMaxChance - settings.soulBagMinChance) * extra / 16;
     }
 
+    // Parachute's cooldown for this player's level (Temucraft.ClassTweaks.Parachute), else the spell's own
+    uint32 ParachuteCooldown(Player* player, SpellInfo const* spellInfo)
+    {
+        uint32 wanted = 0;
+        for (auto const& [level, ms] : settings.parachute)
+            if (player->GetLevel() >= level)
+                wanted = ms;
+        if (!wanted && !settings.parachute.empty())
+            wanted = settings.parachute.front().second;
+        if (!wanted && spellInfo)
+            wanted = spellInfo->RecoveryTime ? spellInfo->RecoveryTime : spellInfo->CategoryRecoveryTime;
+        return wanted;
+    }
+
+    // Parachute's cooldown starts when it opens, not when it is pressed (two phases, spell_temucraft_parachute)
+    void StartParachuteCooldown(Player* player, SpellInfo const* spellInfo)
+    {
+        uint32 const ms = ParachuteCooldown(player, spellInfo);
+        player->RemoveSpellCooldown(SPELL_PARACHUTE, true);
+        if (!ms)
+            return;
+        player->AddSpellCooldown(SPELL_PARACHUTE, 0, ms);
+        WorldPacket data;
+        player->BuildCooldownPacket(data, SPELL_COOLDOWN_FLAG_NONE, SPELL_PARACHUTE, ms);
+        player->SendDirectMessage(&data);
+    }
+
     void ApplyCooldown(Player* player, SpellInfo const* spellInfo)
     {
         uint32 wanted = 0;
+        if (spellInfo->Id == SPELL_PARACHUTE && settings.parachuteReadyMs)
+            return;   // spell_temucraft_parachute sets it when the parachute opens
         if (spellInfo->Id == SPELL_PARACHUTE && !settings.parachute.empty())
-        {
-            for (auto const& [level, ms] : settings.parachute)
-                if (player->GetLevel() >= level)
-                    wanted = ms;
-            if (!wanted)
-                wanted = settings.parachute.front().second;
-        }
+            wanted = ParachuteCooldown(player, spellInfo);
         else
         {
             auto itr = settings.cooldowns.find(spellInfo->Id);
@@ -529,12 +560,20 @@ class spell_temucraft_tranquility : public SpellScript
     }
 };
 
-// Parachute (55001): the stock script only lets it be cast while falling, so pressing it on a ledge before the jump
-// failed with "Can't do that right now". Here it can be cast any time: the slow fall then lasts until you land
-// (or its duration runs out), so it can be opened before a jump too. Not while swimming.
+// Parachute (55001), in two phases. The stock script only lets it be cast while falling; here it can be cast any time
+// (not while swimming):
+// - pressed on the ground: "Parachute" is ready (Temucraft.ClassTweaks.Parachute.ReadyMinutes, 5 min, right-click
+//   cancels it), no slow fall and no cooldown yet. When you start to fall (falling for half a second and below where
+//   the fall started, or 3 yards down from its highest point: a jump on flat ground never opens it) the parachute
+//   opens by itself: slow fall for the spell's 30 sec or until you land or swim, and the cooldown starts then.
+// - pressed while falling: it opens at once, and the cooldown starts.
+// The cooldown is the level-based one of Temucraft.ClassTweaks.Parachute. ReadyMinutes = 0 gives the one-phase
+// spell back (opens when pressed, the cooldown starts at the press).
 class spell_temucraft_parachute : public SpellScript
 {
     PrepareSpellScript(spell_temucraft_parachute);
+
+    bool _falling = false;
 
     SpellCastResult CheckCast()
     {
@@ -543,16 +582,142 @@ class spell_temucraft_parachute : public SpellScript
         return SPELL_CAST_OK;
     }
 
+    // pressed again while it is ready: a fresh aura (ready again, or open at once when falling)
+    void HandleBeforeCast()
+    {
+        Unit* caster = GetCaster();
+        _falling = caster->Unit::IsFalling();
+        if (settings.enable && settings.parachuteReadyMs)
+            caster->RemoveAurasDueToSpell(SPELL_PARACHUTE);
+    }
+
+    void HandleAfterCast()
+    {
+        if (!settings.enable || !settings.parachuteReadyMs)
+            return;
+        Player* player = GetCaster()->ToPlayer();
+        if (!player)
+            return;
+        if (_falling)
+            StartParachuteCooldown(player, GetSpellInfo());   // opened at once
+        else
+            player->RemoveSpellCooldown(SPELL_PARACHUTE, true);   // ready: the cooldown waits for the opening
+    }
+
     void Register() override
     {
         OnCheckCast += SpellCheckCastFn(spell_temucraft_parachute::CheckCast);
+        BeforeCast += SpellCastFn(spell_temucraft_parachute::HandleBeforeCast);
+        AfterCast += SpellCastFn(spell_temucraft_parachute::HandleAfterCast);
+    }
+};
+
+class spell_temucraft_parachute_aura : public AuraScript
+{
+    PrepareAuraScript(spell_temucraft_parachute_aura);
+
+    static constexpr int32 TICK_MS = 250;
+    static constexpr uint32 OPEN_AFTER_MS = 500;   // falling this long and below the fall's start ...
+    static constexpr float OPEN_BELOW = 1.0f;
+    static constexpr float OPEN_DROP = 3.0f;       // ... or this far down from its highest point
+
+    bool _ready = false;        // waiting for a fall: no slow fall yet
+    bool _wasFalling = false;   // open: has been in the air (landing ends it)
+    uint32 _fallMs = 0;
+    float _startZ = 0.0f, _peakZ = 0.0f;
+
+    static bool TwoPhases() { return settings.enable && settings.parachuteReadyMs; }
+    static bool Falling(Unit* unit) { return unit->Unit::IsFalling() && !unit->IsInFlight(); }
+
+    void CalcPeriodic(AuraEffect const* /*aurEff*/, bool& isPeriodic, int32& amplitude)
+    {
+        if (!TwoPhases())
+            return;
+        isPeriodic = true;
+        amplitude = TICK_MS;
+    }
+
+    void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* target = GetTarget();
+        if (!TwoPhases() || !target->IsPlayer())
+            return;
+        if (Falling(target))
+        {
+            _wasFalling = true;   // opens at once: the stock handler slows the fall
+            return;
+        }
+        _ready = true;
+        PreventDefaultAction();   // no slow fall while it waits
+    }
+
+    void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (!_ready)
+            return;
+        GetAura()->SetMaxDuration(int32(settings.parachuteReadyMs));
+        GetAura()->SetDuration(int32(settings.parachuteReadyMs));
+    }
+
+    void Open(Player* player)
+    {
+        _ready = false;
+        _wasFalling = true;
+        player->SetFeatherFall(true);
+        int32 duration = GetSpellInfo()->GetDuration();
+        if (duration <= 0)
+            duration = 30 * IN_MILLISECONDS;
+        GetAura()->SetMaxDuration(duration);
+        GetAura()->SetDuration(duration);
+        StartParachuteCooldown(player, GetSpellInfo());
+    }
+
+    void HandleTick(AuraEffect const* /*aurEff*/)
+    {
+        PreventDefaultAction();
+        Player* player = GetTarget()->ToPlayer();
+        if (!player || !TwoPhases())
+            return;
+        bool const falling = Falling(player);
+        if (!_ready)
+        {
+            // open: over when you land or swim (the stock landing interrupt, see TuneSpell)
+            if (player->IsInWater() || (_wasFalling && !falling))
+            {
+                Remove();
+                return;
+            }
+            if (falling)
+                _wasFalling = true;
+            return;
+        }
+        if (!falling || player->IsInWater())
+        {
+            _fallMs = 0;
+            return;
+        }
+        float const z = player->GetPositionZ();
+        if (!_fallMs)
+            _startZ = _peakZ = z;
+        _fallMs += TICK_MS;
+        _peakZ = std::max(_peakZ, z);
+        if ((_fallMs >= OPEN_AFTER_MS && z < _startZ - OPEN_BELOW) || _peakZ - z >= OPEN_DROP)
+            Open(player);
+    }
+
+    void Register() override
+    {
+        DoEffectCalcPeriodic += AuraEffectCalcPeriodicFn(spell_temucraft_parachute_aura::CalcPeriodic, EFFECT_0, SPELL_AURA_FEATHER_FALL);
+        OnEffectApply += AuraEffectApplyFn(spell_temucraft_parachute_aura::HandleApply, EFFECT_0, SPELL_AURA_FEATHER_FALL, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectApply += AuraEffectApplyFn(spell_temucraft_parachute_aura::AfterApply, EFFECT_0, SPELL_AURA_FEATHER_FALL, AURA_EFFECT_HANDLE_REAL);
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_temucraft_parachute_aura::HandleTick, EFFECT_0, SPELL_AURA_FEATHER_FALL);
     }
 };
 
 void AddTemucraftClassTweaksScripts()
 {
     RegisterSpellScript(spell_temucraft_tranquility);
-    RegisterSpellScript(spell_temucraft_parachute);
+    RegisterSpellAndAuraScriptPair(spell_temucraft_parachute, spell_temucraft_parachute_aura);
     new TemucraftClassTweaksWorld();
     new TemucraftClassTweaksPlayer();
     new TemucraftClassTweaksSpells();

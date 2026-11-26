@@ -24,7 +24,7 @@ items that stayed as they were in 3.3.5a. Everything happens on the server: no c
 | **Raid-wide auras**: class auras, shouts, totems and party auras from talents reach the whole raid (heals stay party-wide) | Everyone | `RaidWideAuras` |
 | **Hour-long buffs**: friendly class buffs of 10 or 30 minutes last an hour | Everyone | `BuffMinutes` |
 | **Happy pets**: hunter pets never get unhappy, no feeding needed | Hunters | `HappyPets` |
-| **Parachute**: every class trainer teaches it from level 10; its cooldown is 10 minutes at 10, 8 at 20, 6 at 30, 4 at 40, 2 at 50 and 1 minute from 60 (`10:600 20:480 30:360 40:240 50:120 60:60`, the text of the release patch-T tooltip) | Everyone | `Parachute` (+ SQL) |
+| **Parachute**: every class trainer teaches it from level 10; its cooldown is 10 minutes at 10, 8 at 20, 6 at 30, 4 at 40, 2 at 50 and 1 minute from 60 (`10:600 20:480 30:360 40:240 50:120 60:60`, the text of the release patch-T tooltip). Two phases: pressed on the ground it is ready for 5 minutes (no slow fall, no cooldown yet, right-click cancels it) and opens by itself when you start to fall (half a second down and below where the fall started, or 3 yards down; a jump doesn't open it); then slow fall for 30 sec or until you land or swim, and the cooldown starts. Pressed while falling it opens at once. `tools/client_parachute_text.py <Spell.dbc>` puts the tooltip and buff text into the client's Spell.dbc (PTR patch-T) | Everyone | `Parachute`, `Parachute.ReadyMinutes` (+ SQL) |
 
 Tooltips still show the stock texts (Shadowmeld's "2 min cooldown", Parachute's "1 min", Ritual of Doom's "4
 additional party members", "party" on raid-wide auras, 30 minute buff durations). The cooldown bar and buff timers do
