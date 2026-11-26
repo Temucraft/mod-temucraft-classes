@@ -225,8 +225,23 @@ public:
     }
 };
 
+// a deleted character's "pet handled" mark goes with it
+// OnPlayerDeleteFromDB: only when the character is really removed (not a CharDelete.Method = 1 unlink, which can be
+// restored), and in the same transaction as the core's own deletes.
+class TemucraftStartingPetGrant_Delete : public PlayerScript
+{
+public:
+    TemucraftStartingPetGrant_Delete() : PlayerScript("TemucraftStartingPetGrant_Delete", { PLAYERHOOK_ON_DELETE_FROM_DB }) { }
+
+    void OnPlayerDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid) override
+    {
+        trans->Append("DELETE FROM `mod_temucraft_classes_pet_grant` WHERE `guid` = {}", guid);
+    }
+};
+
 void AddTemucraftStartingPetGrantScripts()
 {
     new TemucraftStartingPetGrant_World();
     new TemucraftStartingPetGrant_Player();
+    new TemucraftStartingPetGrant_Delete();
 }

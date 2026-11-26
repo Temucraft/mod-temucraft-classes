@@ -186,9 +186,24 @@ public:
     }
 };
 
+// a deleted character's reagent choice (mod_temucraft_character_setting 'reagents') goes with it
+// OnPlayerDeleteFromDB: only when the character is really removed (not a CharDelete.Method = 1 unlink, which can be
+// restored), and in the same transaction as the core's own deletes.
+class TemucraftReagents_Delete : public PlayerScript
+{
+public:
+    TemucraftReagents_Delete() : PlayerScript("TemucraftReagents_Delete", { PLAYERHOOK_ON_DELETE_FROM_DB }) { }
+
+    void OnPlayerDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid) override
+    {
+        trans->Append("DELETE FROM `mod_temucraft_character_setting` WHERE `guid` = {} AND `setting` = 'reagents'", guid);
+    }
+};
+
 void AddTemucraftReagentsScripts()
 {
     new TemucraftReagents_Player();
     new TemucraftReagents_Commands();
     new TemucraftReagents_World();
+    new TemucraftReagents_Delete();
 }

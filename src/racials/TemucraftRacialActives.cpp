@@ -808,6 +808,20 @@ public:
     }
 };
 
+// a deleted character's racial camp spot goes with it
+// OnPlayerDeleteFromDB: only when the character is really removed (not a CharDelete.Method = 1 unlink, which can be
+// restored), and in the same transaction as the core's own deletes.
+class TemucraftRacialActivesDelete : public PlayerScript
+{
+public:
+    TemucraftRacialActivesDelete() : PlayerScript("TemucraftRacialActivesDelete", { PLAYERHOOK_ON_DELETE_FROM_DB }) { }
+
+    void OnPlayerDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid) override
+    {
+        trans->Append("DELETE FROM `mod_temucraft_racial_camp` WHERE `guid` = {}", guid);
+    }
+};
+
 void AddTemucraftRacialActivesScripts()
 {
     new TemucraftRacialActivesWorld();
@@ -834,4 +848,5 @@ void AddTemucraftRacialActivesScripts()
     RegisterSpellScript(spell_temucraft_quiet_contemplation);
     RegisterSpellScript(spell_temucraft_thorn_bloom);
     RegisterSpellScript(spell_temucraft_rootwalking);
+    new TemucraftRacialActivesDelete();
 }
