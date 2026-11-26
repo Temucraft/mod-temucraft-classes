@@ -90,6 +90,12 @@ When a character is deleted for good (`OnPlayerDeleteFromDB`, in the same transa
 `data/sql/db-characters/base/mod_temucraft_classes_character_cleanup.sql` removes the same rows of characters deleted
 before; it is safe to run again.
 
+## Shared headers
+
+`TemucraftPlayerSettings.h`, `TemucraftModuleText.h`, `TemucraftAddonMessage.h` and `TemucraftLocked.h` in `src/` and its subfolders are shared with other Temucraft modules and must stay the same everywhere (all modules
+share one include path). `_tools\check_shared_headers.py` checks the copies (`--fix` copies the canonical one over
+them). This module holds the canonical `TemucraftLocked.h`; the canonical `TemucraftPlayerSettings.h` is in mod-temucraft-player-settings, `TemucraftModuleText.h` is in mod-temucraft, `TemucraftAddonMessage.h` is in mod-temucraft-client-version. Change the canonical copy, then run the check with `--fix`.
+
 ## Also in this module
 
 These were separate modules; they now live here, each with its own folder under `src/`, its own config file in
