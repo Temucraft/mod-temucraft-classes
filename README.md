@@ -5,6 +5,7 @@ Class changes: new talents and their scripts, new racials, and reagents as a pla
 - **Talent points from level 2** (`Temucraft.Talents.FirstLevel`), one more each level, times `Rate.Talent` (1.5 on Temucraft).
 - **57 new talents** across all classes (Talent.dbc 2286-2342, spells 95100-95271), placed in free spots of the stock trees. Scripted ones include Bloom, Templar's Bulwark, Lone Wolf, Focused Fire, Predatory Discipline, Lingering Rage, Demonic Energies, Demonic Brand, Bane of Havoc, Unsealed Wrath, Light's Vigil, Arcane Wrath and Spearing Strike.
 - **New racials** (learned with the racial skill): Ruthless, Big Game Hunter, Artisan's Precision, Shatter Curse, Rapid Regeneration, Elune's Light, Eureka!, Touch of the Grave.
+- **Racial bonuses at their best** (`Temucraft.Racials.BestBonuses`): every passive racial bonus at the strongest it ever was, versions combined (Cultivation +15 Herbalism and +25 Deftness), 29 racials the 3.3.5 client never had (Might of the Mountain, Touch of Elune, Plainsrunning, Jack of All Trades...). Table and details: [docs/racials.md](docs/racials.md).
 - **Starting pets:** new warlocks start with their Imp out. Older hunters and warlocks get theirs once on their next login (see below).
 - **Reagents as a choice:** 120 class spells have their reagents back; each player picks with `.temucraft reagents on|off` (server default in the config).
 
@@ -22,7 +23,9 @@ Class changes: new talents and their scripts, new racials, and reagents as a pla
 |---|---|---|
 | world | `spell_dbc` | 95041-95048, 95100-95271 (new), plus 120 stock class spells with reagents back |
 | world | `talent_dbc` | 2286-2342 |
-| world | `skilllineability_dbc` | 31798, 31800-31806 (racials) |
+| world | `spell_dbc` | 95800-95834 (best racial bonuses: `mod_temucraft_racial_bonuses.sql`) |
+| world | `skilllineability_dbc` | 31798, 31800-31806 (racials), 31950-32049 (best racial bonuses) |
+| world | `spell_linked_spell` | 95817 (Jack of All Trades' helpers 95818-95821) |
 | world | `spell_ranks`, `spell_proc`, `spell_script_names` | for the spells above (Swift Judgement 95259 uses the stock `spell_pal_judgement_of_light`: it judges the seal; its 1 min cooldown is its own) |
 | world | `creature_template` (+`_model`) | 601990 (Summon Hawk) |
 | characters | `mod_temucraft_character_setting` (setting `reagents`) | per character |

@@ -107,8 +107,9 @@ namespace
 
     bool IsRacialRank(SpellInfo const* info)
     {
+        // "Racial", "Racial Passive", and the best bonuses' "Racial - Combat (Offense)" and the like
         char const* rank = info ? info->Rank[LOCALE_enUS] : nullptr;
-        return rank && (std::strcmp(rank, "Racial") == 0 || std::strcmp(rank, "Racial Passive") == 0);
+        return rank && std::strncmp(rank, "Racial", 6) == 0;
     }
 
     std::vector<uint32> SpellsFor(uint8 race, uint8 cls);

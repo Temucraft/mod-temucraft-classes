@@ -28,6 +28,63 @@ after the cast. Everything has a switch in the config.
 Racials that later expansions split into several spells, and racials the 3.3.5 client has no spell for (Might of the
 Mountain, Brawn, Arcane Acuity, Touch of Elune...), need new client spell data and aren't part of this module.
 
+### Racial bonuses at their best (`Temucraft.Racials.BestBonuses`)
+
+For each race, the strongest version of every passive racial bonus over the years (Retail, Classic Era, TBC/Wrath/
+Cata/MoP Classic, WoW Forever), the good parts of different versions combined and nothing that was removed later:
+Cultivation is +15 Herbalism (Cataclysm) and +25 Deftness (Dragonflight); Sword Specialization +5 weapon skill
+(Classic) and +5 expertise (TBC). The server's own value counts as a version, so no racial gets weaker. The full
+per-race table, with the versions each value comes from and what was left out: `_dev/reference/racial-bonuses-best-2026-11-26.md`.
+
+| Race | Changed racials | New racials (95800-95834) |
+|---|---|---|
+| Human | Sword and Mace Specialization +5 expertise and +5 skill; Ruthless works without a Gun | No Place Like Home (Hearthstone -5 min) |
+| Orc | Hardiness also 25% chance to resist stuns; Axe Specialization +5 skill | Savage (+1% crit with Axes) |
+| Dwarf | Gun Specialization +5 skill; Frost Resistance = level, -1% damage; Artisan's Precision works without a Gun | Might of the Mountain (+2% crit damage) |
+| Night Elf | Quickness +2% dodge; Nature Resistance; Elusiveness +2% speed, +5% while stealthed | Touch of Elune (haste at night, crit by day) |
+| Undead | Underwater Breathing indefinite; Shadow Resistance | - |
+| Tauren | Endurance +5% total health and +1% hit; Nature Resistance; Cultivation +25 Deftness | Brawn (+2% crit damage), Plainsrunning (up to +60% speed on foot) |
+| Gnome | Expansive Mind +5% mana too; Arcane Resistance | Shortblade Specialization (+4 expertise), Nimble Fingers (+1% haste) |
+| Troll | Regeneration 20%/20%; Beast Slaying +20% XP; Bow and Throwing +5 skill | Dead Eye (+1% hit with ranged weapons) |
+| Goblin | Best Deals Anywhere works (20% everywhere) | - |
+| Blood Elf | Magic Resistance +5 all resistances | Arcane Resistance, Arcane Acuity (+1% crit) |
+| Draenei | Gemcutting +10; Heroic Presence +1% all stats; Shadow Resistance | - |
+| Worgen | Flayer +25 Deftness; Aberration = level, -1% damage | - |
+| Pandaren | Gourmand +15 Cooking; Inner Peace double rested XP; Bouncy half falling damage | Epicurean (Well Fed doubled) |
+| Nightborne | Magical Affinity +1% magic damage; Ancient History +15 Inscription | - |
+| Highmountain Tauren | Rugged Tenacity (hits smaller by 1.8% Stamina); Mountaineer +1% damage/healing; Pride of Ironhorn +15 Mining, +25 Deftness | Waste Not, Want Not |
+| Void Elf | Entropic Embrace (5% damage/healing buff proc) | Chill of Night (-2% Shadow damage), Preternatural Calm (no pushback) |
+| Lightforged Draenei | Holy Resistance +1% healing; Forge of Light +10 Blacksmithing | Demonbane (+20% XP vs Demons) |
+| Zandalari Troll | - | City of Gold (+2% gold) |
+| Kul Tiran | Brush It Off (heal 2% of damage taken, +1% damage/healing); Child of the Sea +10% swim speed; Rime -1% Frost/Nature damage | Jack of All Trades (+5 all professions) |
+| Vulpera | Nose for Trouble (first hit of each enemy smaller) | Fire Resistance |
+| Dark Iron Dwarf | Dungeon Delver 4% (was 94%) | Forged in Flames, Mass Production (+5 Blacksmithing, 25% faster) |
+| Mag'har Orc | Savage Blood -10% poison/disease/curse duration; Sympathetic Vigor +10% pet health | - |
+| Mechagnome | Emergency Failsafe heals 15% below 20% health (2.5 min) | Combat Analysis (passive stacks) |
+| Dracthyr | - | Discerning Eye (+2 Perception) |
+| Earthen | Titan-Forged +10% armor from items | Ingest Minerals, Hyper Productive (+25 Finesse), Wide-Eyed Wonder (+200% exploration XP) |
+| Haranir | - | Lash Out, One With Nature, Subterranean Predator |
+
+How:
+
+- `tools/build_racial_bonuses.py` holds every value and tooltip. It writes `mod_temucraft_racial_bonuses.sql` (the new
+  spells, their rows on the racial skill lines 31950-32049, Jack of All Trades' hidden helpers) and
+  `src/racials/TemucraftRacialBonusesData.h` (what changes in existing racial spells); with `--client OUTDIR` it writes the
+  client's `Spell.dbc` and `SkillLineAbility.dbc` (patch-T's own files plus these rows, ranks and tooltips).
+- The worldserver changes the existing spells at startup (`TemucraftRacialBonuses.cpp`), only with BestBonuses = 1.
+  New racials sit on the racial skill lines, so they are learned like the others at creation and at every login, and
+  heritage carries them. With BestBonuses = 0 they are never learned and are taken away at login.
+- What auras can't do is scripted there too (XP by creature type, Hearthstone, vendor discount, gold, rested XP,
+  falling damage, Well Fed, Plainsrunning, Touch of Elune, Combat Analysis, Emergency Failsafe, Nose for Trouble,
+  Rugged Tenacity, Brush It Off, Entropic Embrace, Savage Blood, Mass Production, pet health, extra meat and fish).
+- Deftness, Finesse and Perception come from mod-temucraft-professions (`mod_temucraft_profession_racial`,
+  `Temucraft.Professions.RacialStats`): a character gets the stats of the racials it knows.
+- Tooltips: the rank line reads "Racial - Category (Sub-group)", e.g. "Racial - Utility (Travel)", for every passive
+  racial bonus (categories: Profession, Weapon Skill, Stats, Combat, Resistance, Utility). "Racial" ranks are matched by
+  their start, so cooldowns and heritage keep working with the new ranks.
+- Settings: `Temucraft.Racials.BestBonuses` (1), `.ResistancePerLevel` (1; 0 = flat 10), `.StunResistChance` (25),
+  `.PlainsrunningMax` (60). Spell values need a restart.
+
 ### Works with other modules
 
 mod-temucraft-heritage: swapped and second racials get the same treatment. [mod-temucraft-classes](https://github.com/Temucraft/mod-temucraft-classes) no longer sets

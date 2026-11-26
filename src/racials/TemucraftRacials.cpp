@@ -71,8 +71,9 @@ namespace
 
     bool IsRacial(SpellInfo const* info)
     {
+        // "Racial", "Racial Passive", and the best bonuses' "Racial - Combat (Offense)" and the like
         char const* rank = info->Rank[LOCALE_enUS];
-        return rank && (!std::strcmp(rank, "Racial") || !std::strcmp(rank, "Racial Passive"));
+        return rank && !std::strncmp(rank, "Racial", 6);
     }
 
     void LoadSettings()

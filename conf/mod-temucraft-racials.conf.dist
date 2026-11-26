@@ -60,6 +60,40 @@ Temucraft.Racials.Diplomacy.ExaltedDiscount = 25
 Temucraft.Racials.ExpansiveMind = 1
 Temucraft.Racials.ExpansiveMind.Percent = 5
 
+#
+#    Temucraft.Racials.BestBonuses
+#        Description: Passive racial bonuses at their best: for each race the strongest version of every bonus over
+#                     the years (Retail, Classic, TBC/Wrath/Cata/MoP Classic, WoW Forever), the good parts of
+#                     different versions combined (Cultivation: +15 Herbalism and +25 Deftness), nothing that was
+#                     removed later. Changes existing racials (weapon skill and expertise, resistances equal to your
+#                     level, more hit, dodge, stun resistance, ...) and adds the racials the 3.3.5 client never had
+#                     (Might of the Mountain, Touch of Elune, Plainsrunning, Jack of All Trades, ... spells
+#                     95800-95834, learned with the other racials at creation and at login). The table:
+#                     docs/racials.md. 0 = racials as before (the new ones are taken away at login).
+#                     Needs a restart. The client's tooltips come with the patch tools/build_racial_bonuses.py makes.
+#        Default:     1
+#
+#    Temucraft.Racials.BestBonuses.ResistancePerLevel
+#        Description: Racial resistances (Frost, Nature, Shadow, Arcane, Worgen's Aberration, Blood Elf's Arcane
+#                     Resistance) equal to the character's level, as in Cataclysm. 0 = a flat 10, as in Classic.
+#                     The 2% less chance to be hit and the 1% less damage taken stay either way. Needs a restart.
+#        Default:     1
+#
+#    Temucraft.Racials.BestBonuses.StunResistChance
+#        Description: Hardiness (Orc): chance to resist Stun effects (Classic's 25%), on top of 20% shorter stuns.
+#                     0 = none. Needs a restart.
+#        Default:     25
+#
+#    Temucraft.Racials.BestBonuses.PlainsrunningMax
+#        Description: Plainsrunning (Tauren): most movement speed, in percent, from moving on foot (2% a second).
+#                     WoW Forever: 60 (first 30).
+#        Default:     60
+
+Temucraft.Racials.BestBonuses = 1
+Temucraft.Racials.BestBonuses.ResistancePerLevel = 1
+Temucraft.Racials.BestBonuses.StunResistChance = 25
+Temucraft.Racials.BestBonuses.PlainsrunningMax = 60
+
 ########################################
 # mod-temucraft-heritage
 ########################################
