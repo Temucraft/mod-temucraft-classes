@@ -53,16 +53,16 @@ per-race table, with the versions each value comes from and what was left out: `
 | Pandaren | Gourmand +15 Cooking; Inner Peace double rested XP; Bouncy half falling damage | Epicurean (Well Fed doubled) |
 | Nightborne | Magical Affinity +1% magic damage; Ancient History +15 Inscription | - |
 | Highmountain Tauren | Rugged Tenacity (hits smaller by 1.8% Stamina); Mountaineer +1% damage/healing; Pride of Ironhorn +15 Mining, +25 Deftness | Waste Not, Want Not |
-| Void Elf | Entropic Embrace (5% damage/healing buff proc) | Chill of Night (-2% Shadow damage), Preternatural Calm (no pushback) |
+| Void Elf | Entropic Embrace (in combat a 40% roll every 15 sec, sure on the 4th: +5% damage/healing for 12 sec) | Chill of Night (-2% Shadow damage), Preternatural Calm (no pushback) |
 | Lightforged Draenei | Holy Resistance +1% healing; Forge of Light +10 Blacksmithing | Demonbane (+20% XP vs Demons) |
 | Zandalari Troll | - | City of Gold (+2% gold) |
 | Kul Tiran | Brush It Off (heal 2% of damage taken, +1% damage/healing); Child of the Sea +10% swim speed; Rime -1% Frost/Nature damage | Jack of All Trades (+5 all professions) |
 | Vulpera | Nose for Trouble (first hit of each enemy smaller) | Fire Resistance |
 | Dark Iron Dwarf | Dungeon Delver 4% (was 94%) | Forged in Flames, Mass Production (+5 Blacksmithing, 25% faster) |
 | Mag'har Orc | Savage Blood -10% poison/disease/curse duration; Sympathetic Vigor +10% pet health | - |
-| Mechagnome | Emergency Failsafe heals 15% below 20% health (2.5 min) | Combat Analysis (passive stacks) |
+| Mechagnome | Emergency Failsafe heals 15% below 20% health (2.5 min) | Combat Analysis (passive: +1% Str/Agi/Int every 5 sec in combat, up to 10%) |
 | Dracthyr | - | Discerning Eye (+2 Perception) |
-| Earthen | Titan-Forged +10% armor from items | Ingest Minerals, Hyper Productive (+25 Finesse), Wide-Eyed Wonder (+200% exploration XP) |
+| Earthen | Titan-Forged +10% armor from items | Ingest Minerals (+60 Stamina and Spirit), Hyper Productive (+25 Finesse), Wide-Eyed Wonder (+200% exploration XP) |
 | Haranir | - | Lash Out, One With Nature, Subterranean Predator |
 
 How:
@@ -83,7 +83,10 @@ How:
   racial bonus (categories: Profession, Weapon Skill, Stats, Combat, Resistance, Utility). "Racial" ranks are matched by
   their start, so cooldowns and heritage keep working with the new ranks.
 - Settings: `Temucraft.Racials.BestBonuses` (1), `.ResistancePerLevel` (1; 0 = flat 10), `.StunResistChance` (25),
-  `.PlainsrunningMax` (60). Spell values need a restart.
+  `.PlainsrunningMax` (60), `.EntropicEmbracePeriod` (15 sec), `.EntropicEmbraceChance` (40),
+  `.EntropicEmbraceGuarantee` (4: the roll after 3 misses in a row always succeeds; 0 = never). Entropic Embrace rolls
+  on the module's 1 sec player tick, only in combat; leaving combat resets the misses. The tooltip states the defaults.
+  Spell values need a restart.
 
 ### Racial actives (`Temucraft.Racials.Actives`)
 

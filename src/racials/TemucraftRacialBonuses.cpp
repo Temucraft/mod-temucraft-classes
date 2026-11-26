@@ -89,6 +89,9 @@ namespace
         bool resistancePerLevel = true;
         int32 stunResist = 25;
         int32 plainsMax = 60;
+        uint32 embracePeriod = 15;   // Entropic Embrace: seconds in combat between rolls
+        int32 embraceChance = 40;    // chance of each roll
+        uint32 embraceGuarantee = 4; // this roll always succeeds after the ones before it missed (0 = never)
     } settings;
 
     void LoadSettings()
@@ -98,6 +101,9 @@ namespace
         settings.resistancePerLevel = sConfigMgr->GetOption<bool>("Temucraft.Racials.BestBonuses.ResistancePerLevel", true);
         settings.stunResist = std::clamp(sConfigMgr->GetOption<int32>("Temucraft.Racials.BestBonuses.StunResistChance", 25), 0, 100);
         settings.plainsMax = std::clamp(sConfigMgr->GetOption<int32>("Temucraft.Racials.BestBonuses.PlainsrunningMax", 60), 0, 200);
+        settings.embracePeriod = std::clamp<uint32>(sConfigMgr->GetOption<uint32>("Temucraft.Racials.BestBonuses.EntropicEmbracePeriod", 15), 1, 3600);
+        settings.embraceChance = std::clamp(sConfigMgr->GetOption<int32>("Temucraft.Racials.BestBonuses.EntropicEmbraceChance", 40), 0, 100);
+        settings.embraceGuarantee = std::min<uint32>(sConfigMgr->GetOption<uint32>("Temucraft.Racials.BestBonuses.EntropicEmbraceGuarantee", 4), 100);
     }
 
     bool IsNewLearned(uint32 spell)
@@ -195,7 +201,8 @@ namespace
         std::array<float, 4> heal{};              // Brush It Off: healing due in the next 4 seconds
         uint8 healPos = 0;
         time_t failsafeReady = 0;    // Emergency Failsafe
-        time_t embraceReady = 0;     // Entropic Embrace
+        uint32 embraceSec = 0;       // Entropic Embrace: seconds in combat since the last roll
+        uint32 embraceMisses = 0;    // rolls in a row that missed (this fight)
     };
 
     std::mutex sLock;
@@ -261,6 +268,29 @@ namespace
             SetAmount(player, SPELL_PLAINSRUNNING, EFFECT_0, st.plains * 2);
         }
 
+        // Entropic Embrace: in combat, a roll every EntropicEmbracePeriod sec; after Guarantee - 1 misses in a row the
+        // next one succeeds. Out of combat no rolls, and the fight's misses are forgotten.
+        if (player->IsInCombat() && player->HasSpell(SPELL_ENTROPIC_EMBRACE))
+        {
+            if (++st.embraceSec >= settings.embracePeriod)
+            {
+                st.embraceSec = 0;
+                bool const sure = settings.embraceGuarantee && st.embraceMisses + 1 >= settings.embraceGuarantee;
+                if (sure || roll_chance_i(settings.embraceChance))
+                {
+                    st.embraceMisses = 0;
+                    player->m_Events.AddEventAtOffset([player]() { player->CastSpell(player, SPELL_ENTROPIC_BUFF, true); }, 1ms);
+                }
+                else
+                    ++st.embraceMisses;
+            }
+        }
+        else
+        {
+            st.embraceSec = 0;
+            st.embraceMisses = 0;
+        }
+
         if (++st.ticks < 5)
             return;
         st.ticks = 0;
@@ -275,7 +305,7 @@ namespace
             SetAmount(player, SPELL_TOUCH_OF_ELUNE, EFFECT_2, night ? 0 : 1);
         }
 
-        // Combat Analysis: a stack every 5 sec in combat, one fades every 5 sec out of it; 0.5% each (whole percents)
+        // Combat Analysis: a stack every 5 sec in combat, one fades every 5 sec out of it; 1% each (10% at most)
         if (player->HasSpell(SPELL_COMBAT_ANALYSIS))
         {
             if (player->IsInCombat())
@@ -283,7 +313,7 @@ namespace
             else if (st.analysis)
                 --st.analysis;
             for (uint8 i = 0; i < 3; ++i)
-                SetAmount(player, SPELL_COMBAT_ANALYSIS, i, st.analysis / 2);
+                SetAmount(player, SPELL_COMBAT_ANALYSIS, i, st.analysis);
         }
 
         // Nose for Trouble: a new fight, new enemies
@@ -460,25 +490,7 @@ class TemucraftRacialBonusesUnit : public UnitScript
 {
 public:
     TemucraftRacialBonusesUnit() : UnitScript("TemucraftRacialBonusesUnit", true,
-        { UNITHOOK_ON_DAMAGE, UNITHOOK_ON_HEAL, UNITHOOK_ON_AURA_APPLY, UNITHOOK_ON_AURA_REMOVE }) { }
-
-    static void Embrace(Player* player)
-    {
-        if (!player->HasSpell(SPELL_ENTROPIC_EMBRACE))
-            return;
-        time_t const now = GameTime::GetGameTime().count();
-        bool proc = false;
-        WithState(player, [&](State& st)
-        {
-            if (now >= st.embraceReady && roll_chance_i(10))
-            {
-                st.embraceReady = now + 30;
-                proc = true;
-            }
-        });
-        if (proc)
-            player->m_Events.AddEventAtOffset([player]() { player->CastSpell(player, SPELL_ENTROPIC_BUFF, true); }, 1ms);
-    }
+        { UNITHOOK_ON_DAMAGE, UNITHOOK_ON_AURA_APPLY, UNITHOOK_ON_AURA_REMOVE }) { }
 
     void OnDamage(Unit* attacker, Unit* victim, uint32& damage) override
     {
@@ -545,17 +557,6 @@ public:
                 }
             }
         }
-
-        if (attacker && attacker != victim)
-            if (Player* player = attacker->ToPlayer())
-                Embrace(player);
-    }
-
-    void OnHeal(Unit* healer, Unit* /*receiver*/, uint32& gain) override
-    {
-        if (settings.enable && gain && healer)
-            if (Player* player = healer->ToPlayer())
-                Embrace(player);
     }
 
     void OnAuraApply(Unit* unit, Aura* aura) override

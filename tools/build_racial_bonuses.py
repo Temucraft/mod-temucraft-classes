@@ -141,7 +141,7 @@ NEW = [
     (95824, 'earthen', 'Wide-Eyed Wonder', rank('Utility', 'Experience'),
      'Experience gained from discovering new areas increased by 200%.', [eff(DUMMY)], 81115, {}),
     (95825, 'earthen', 'Ingest Minerals', rank('Stats', 'Primary'),
-     'You are always Well Fed: Stamina and Spirit increased by 40.', [eff(MOD_STAT, 40, 2), eff(MOD_STAT, 40, 4)],
+     'You are always Well Fed: Stamina and Spirit increased by 60.', [eff(MOD_STAT, 60, 2), eff(MOD_STAT, 60, 4)],
      81115, {}),
     (95826, 'haranir', 'Lash Out', rank('Combat', 'Offense'),
      'Your critical strikes with attacks and spells deal 1% more damage.', [eff(CRIT_DAMAGE, 1, ALL)], 20583, {}),
@@ -158,7 +158,7 @@ NEW = [
     (95831, 'zandalari', 'City of Gold', rank('Utility', 'Economy'),
      'Gold looted from creatures increased by 2%.', [eff(DUMMY)], 69044, {}),
     (95832, 'mechagnome', 'Combat Analysis', rank('Stats', 'Primary'),
-     'Every 5 sec in combat your Strength, Agility and Intellect increase by 0.5%, stacking up to 10 times (5%). '
+     'Every 5 sec in combat your Strength, Agility and Intellect increase by 1%, stacking up to 10 times (10% in all). '
      'Out of combat one stack fades every 5 sec.',
      [eff(STAT_PCT, 0, 0), eff(STAT_PCT, 0, 1), eff(STAT_PCT, 0, 3)], 81111, {}),
     (95833, 'highmountain', 'Waste Not, Want Not', rank('Utility', 'Other'),
@@ -270,8 +270,11 @@ MODS = [
     ([81110], rank('Combat', 'Defense'), 'Damage taken from each hit reduced by 1.8% of your Stamina. Nature damage '
      'taken reduced by 2%.', {0: eff(DMG_TAKEN_PCT, -2, NATURE)}, {}),
     # Void Elf
-    ([81093], rank('Combat', 'Offense'), 'Your attacks, spells and heals have a chance to grant Entropic Embrace, '
-     'increasing damage and healing done by 5% for 12 sec.', {0: eff(DUMMY)}, {}),
+    # (a rhythm with a chance roll, TemucraftRacialBonuses.cpp; the numbers are the config defaults,
+    #  Temucraft.Racials.BestBonuses.EntropicEmbrace*)
+    ([81093], rank('Combat', 'Offense'), 'While in combat, every 15 sec you have a 40% chance to gain Entropic '
+     'Embrace, increasing damage and healing done by 5% for 12 sec. After 3 misses in a row the next roll always '
+     'succeeds, so it comes at least once a minute.', {0: eff(DUMMY)}, {}),
     ([81094], rank('Stats', 'Primary'), None, {}, {}),
     # Lightforged Draenei
     ([81100], rank('Profession', 'Crafting'), 'Blacksmithing skill increased by 10 and Spirit increased by 3%.',

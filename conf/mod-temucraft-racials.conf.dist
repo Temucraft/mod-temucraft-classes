@@ -88,11 +88,29 @@ Temucraft.Racials.ExpansiveMind.Percent = 5
 #        Description: Plainsrunning (Tauren): most movement speed, in percent, from moving on foot (2% a second).
 #                     WoW Forever: 60 (first 30).
 #        Default:     60
+#
+#    Temucraft.Racials.BestBonuses.EntropicEmbracePeriod
+#        Description: Entropic Embrace (Void Elf): while in combat, a roll every this many seconds for the buff
+#                     (+5% damage and healing for 12 sec). No rolls out of combat. The tooltip says 15.
+#        Default:     15
+#
+#    Temucraft.Racials.BestBonuses.EntropicEmbraceChance
+#        Description: Entropic Embrace: chance of each roll, in percent. The tooltip says 40.
+#        Default:     40
+#
+#    Temucraft.Racials.BestBonuses.EntropicEmbraceGuarantee
+#        Description: Entropic Embrace: this roll always succeeds when all the rolls before it in the fight since the
+#                     last buff missed (4 = after 3 misses, so with a 15 sec period at least once a minute). The
+#                     count of misses starts again when combat ends. 0 = no guarantee, 1 = every roll succeeds.
+#        Default:     4
 
 Temucraft.Racials.BestBonuses = 1
 Temucraft.Racials.BestBonuses.ResistancePerLevel = 1
 Temucraft.Racials.BestBonuses.StunResistChance = 25
 Temucraft.Racials.BestBonuses.PlainsrunningMax = 60
+Temucraft.Racials.BestBonuses.EntropicEmbracePeriod = 15
+Temucraft.Racials.BestBonuses.EntropicEmbraceChance = 40
+Temucraft.Racials.BestBonuses.EntropicEmbraceGuarantee = 4
 
 ########################################
 # mod-temucraft-heritage
