@@ -454,7 +454,8 @@ def spell_columns():
             if not line.startswith('`'):
                 break
             name = line.split('`')[1]
-            kind = 'f' if ' float' in line else 's' if 'char' in line or 'text' in line else 'u' if 'unsigned' in line else 'i'
+            decl = line.split('`')[2]         # the type part only (a column name like "NameSubtext" holds "text")
+            kind = 'f' if ' float' in decl else 's' if 'char' in decl or 'text' in decl else 'u' if 'unsigned' in decl else 'i'
             cols.append((name, kind))
     assert len(cols) == 234, len(cols)
     return cols
