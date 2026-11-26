@@ -79,6 +79,17 @@ The client's spell data lost some stock requirements. The server puts them back 
 default; 0 = not required). The stock values are in `mod_temucraft_requirement` (1,427 rows); they apply at startup
 and on `.reload config`.
 
+## Deleted characters
+
+When a character is deleted for good (`OnPlayerDeleteFromDB`, in the same transaction as the core's own deletes; not a `CharDelete.Method = 1` unlink, which can be restored), these go with it:
+
+- its `mod_temucraft_classes_pet_grant` row (the starting pet mark, `src/TemucraftStartingPetGrant.cpp`),
+- its `mod_temucraft_racial_camp` row (racial camp spot, `src/racials/TemucraftRacialActives.cpp`),
+- its `reagents` row in `mod_temucraft_character_setting` (reagent choice, `src/TemucraftReagents.cpp`).
+
+`data/sql/db-characters/base/mod_temucraft_classes_character_cleanup.sql` removes the same rows of characters deleted
+before; it is safe to run again.
+
 ## Also in this module
 
 These were separate modules; they now live here, each with its own folder under `src/`, its own config file in
