@@ -85,6 +85,54 @@ How:
 - Settings: `Temucraft.Racials.BestBonuses` (1), `.ResistancePerLevel` (1; 0 = flat 10), `.StunResistChance` (25),
   `.PlainsrunningMax` (60). Spell values need a restart.
 
+### Racial actives (`Temucraft.Racials.Actives`)
+
+The racials of `_dev/references/wow-racials_v3.html` that the races did not have, or only had as a renamed copy of a
+stock racial (Haymaker, Bull Rush, Quaking Palm and Wing Buffet were War Stomp; Arcane Pulse was Arcane Torrent;
+Spatial Rift and Cantrips were Shadowmeld; Bag of Tricks and Soar were Escape Artist; Make Camp was Cannibalize;
+Azerite Surge was Stoneform; Light's Reckoning was Gift of the Naaru; Ancestral Call was Blood Fury; Combat Analysis was
+Berserking), each in its best version, adapted to 3.3.5 and balanced for level 80. Spells 95835-95876. The decisions
+(what was picked, what was left out and why): `_dev/reference/racial-actives-2026-11-26.md`.
+
+| Race | New (or replacing the copy) | Cooldown |
+|---|---|---|
+| Zandalari Troll | Regeneratin' (50% health over 6 sec, only direct damage stops it); Pterrordax Swoop (while falling: slow fall, +60% speed); Embrace of Bwonsamdi (passive: 15% chance on damage to drain the target, 20 sec) | 2 min, 2 min |
+| Dark Iron Dwarf | Fireblood (cleanse poison, disease, curse, magic, bleed + highest primary stat, more per effect removed); Mole Machine (tunnel to a discovered Dark Iron place: menu) | 90 sec, 10 min |
+| Mag'har Orc | Ancestral Call (one of four spirits for 15 sec: +5% crit, +5% haste, +5/+3 AP/SP per level, or +3% damage/healing and -3% damage taken) | 90 sec |
+| Kul Tiran | Haymaker (single target: damage, 3 sec stun, knockback) | 2 min |
+| Vulpera | Bag of Tricks (enemy: damage and 80% slow; ally: heal and +20% speed; 4 sec); Make Camp; Return to Camp | 75 sec, -, 10 min |
+| Mechagnome | Hyper Organic Light Originator (two decoys taunt your attackers, 8 sec, not bosses); Skeleton Pinkie (pick locks up to 5 x level) | 2 min, - |
+| Nightborne | Arcane Pulse (8 yd Arcane damage, 80% slow 8 sec); Cantrips (a mailbox for 90 sec) | 2 min, 2 min |
+| Highmountain Tauren | Bull Rush (leap ~10 yd, knock down up to 5 enemies 1.5 sec) | 90 sec |
+| Lightforged Draenei | Light's Judgment (ground target, Holy damage after 3 sec, 10 yd); Light's Reckoning (passive: on death, damage enemies and heal allies 8 yd); Forge of Light (forge and anvil for 3 min) | 2 min, -, 2 min |
+| Void Elf | Spatial Rift (a rift travels forward, cast again to step through, up to 35 yd) | 2 min |
+| Pandaren | Quaking Palm (single target, 4 sec incapacitate, damage breaks it) | 90 sec |
+| Dracthyr | Wing Buffet (frontal knockback); Tail Swipe (knockback around you); Soar (leap and glide, outdoors, out of combat) | 75 sec, 75 sec, 15 sec |
+| Earthen | Azerite Surge (1.5 sec cast: fire cone, +50% on the healthiest enemy, heals allies in it); Quiet Contemplation (sit: 5% health and mana a second, 20 sec) | 90 sec, - |
+| Haranir | Thorn Bloom (ground target: damage + DoT on 8 enemies, heal + HoT on 8 allies); Rootwalking (to Nighthaven, Moonglade) | 2 min, 10 min |
+
+How:
+
+- `tools/build_racial_actives.py` holds every spell (ids, effects, tooltips, icons, cooldowns). It writes
+  `mod_temucraft_racial_actives.sql` (spell_dbc 95835-95899, new skill line rows 32050-32149, the skill line rows of
+  the replaced copies pointed at the new spell, spell_script_names, texts), `mod_temucraft_racial_camp.sql`
+  (characters: the Vulpera camp) and `src/racials/TemucraftRacialActivesData.h`; with `--client OUTDIR` the client's
+  `Spell.dbc` and `SkillLineAbility.dbc` on top of the PTR's (`--base`), with the mod-worgoblin-high-elf fixes below.
+  Run `build_racial_bonuses.py` first when its lists change.
+- `TemucraftRacialActives.cpp` scripts them. Amounts: a part per level plus a part of the higher of attack power and
+  1.5 x spell power (melee and casters land close); the tooltips say the same.
+- Cooldowns are the final ones: the cooldown cut above skips these spells. Combat ones follow the same rule (retail
+  -25%, at most 2 min); the teleports (Mole Machine, Return to Camp, Rootwalking) are 10 min.
+- At login a character loses the replaced copy and its action bar buttons move to the new spell. Old copies stay in the
+  DBC (and keep their fixes in `mod_temucraft_racials_fixes.sql`), nobody learns them.
+- Actives = 0: the new spells are never learned and are taken away at login, the copies come back.
+- Stock 3.3.5 icons only.
+
+Also fixed (mod-worgoblin-high-elf's racials): Rugged Tenacity, Rime of the Ancient Mariner and Desert Hardened used aura
+186 (attacker's chance to hit) under a "damage taken" tooltip, now damage taken (aura 87, BestBonuses' MODS and the
+client); Dungeon Delver and Sympathetic Vigor had retail icon file ids, now stock icons (client); Sympathetic Vigor's pet
+health is mod-worgoblin-high-elf's now (it puts the aura on the pet), so this module no longer adds 95834.
+
 ### Works with other modules
 
 mod-temucraft-heritage: swapped and second racials get the same treatment. [mod-temucraft-classes](https://github.com/Temucraft/mod-temucraft-classes) no longer sets

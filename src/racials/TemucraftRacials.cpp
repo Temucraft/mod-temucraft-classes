@@ -16,7 +16,8 @@
 // - The Human Spirit: 10% more Spirit (from 3%). Diplomacy: also a vendor discount with factions you're Friendly
 //   with, and a bigger one at Exalted (25%).
 // - Expansive Mind also gives 5% more rage, energy and runic power.
-// Each part has its own switch.
+// Each part has its own switch. The racial actives of TemucraftRacialActives.cpp (95835-95876) keep their own,
+// final cooldowns.
 
 #include "Config.h"
 #include "Creature.h"
@@ -29,6 +30,7 @@
 #include "SpellAuras.h"
 #include "SpellInfo.h"
 #include "SpellMgr.h"
+#include "TemucraftRacialActivesData.h"
 #include <algorithm>
 #include <cstring>
 #include <sstream>
@@ -105,6 +107,13 @@ namespace
         settings.diplomacyExaltedPct = sConfigMgr->GetOption<float>("Temucraft.Racials.Diplomacy.ExaltedDiscount", 25.0f);
         settings.expansiveMind = sConfigMgr->GetOption<bool>("Temucraft.Racials.ExpansiveMind", true);
         settings.expansiveMindPct = sConfigMgr->GetOption<float>("Temucraft.Racials.ExpansiveMind.Percent", 5.0f);
+    }
+
+    // the racial actives' cooldowns are already the final ones
+    bool KeepsCooldown(uint32 spell)
+    {
+        using namespace TemucraftRacialActivesData;
+        return std::find(std::begin(LEARNED), std::end(LEARNED), spell) != std::end(LEARNED);
     }
 
     uint32 WantedCooldown(SpellInfo const* info, uint32 stock)
@@ -196,7 +205,7 @@ public:
         if (!info || !IsRacial(info))
             return;
 
-        if (settings.cooldowns)
+        if (settings.cooldowns && !KeepsCooldown(info->Id))
         {
             uint32 const stock = info->RecoveryTime ? info->RecoveryTime : info->CategoryRecoveryTime;
             if (stock)

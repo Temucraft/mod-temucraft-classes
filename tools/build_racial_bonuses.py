@@ -163,6 +163,7 @@ NEW = [
      [eff(STAT_PCT, 0, 0), eff(STAT_PCT, 0, 1), eff(STAT_PCT, 0, 3)], 81111, {}),
     (95833, 'highmountain', 'Waste Not, Want Not', rank('Utility', 'Other'),
      'Gives a 25% chance to loot an additional piece of meat or fish.', [eff(DUMMY)], 81107, {}),
+    # (no longer used: mod-worgoblin-high-elf puts Sympathetic Vigor 273217 itself on the pet; kept so the id stays taken)
     (95834, None, 'Sympathetic Vigor', '', 'Health increased by 10%.', [eff(HEALTH_PCT, 10)], 273217, {'hidden': True}),
 ]
 
@@ -265,8 +266,9 @@ MODS = [
      {1: eff(DMG_DONE_PCT, 1, ALL), 2: eff(HEAL_DONE_PCT, 1)}, {}),
     ([81109], rank('Profession', 'Gathering'), 'Mining skill increased by 15 and Deftness increased by 25: you mine '
      'faster. Duration of Stun effects reduced by 10%.', {1: eff(SKILL_TALENT, 15, 186)}, {}),
-    ([81110], rank('Combat', 'Defense'), 'Damage taken from each hit reduced by 1.8% of your Stamina. Chance to be hit '
-     'by Nature spells reduced by 2%.', {}, {}),
+    # (its aura 186, chance to be hit, against a tooltip that says damage taken: now damage taken, as meant)
+    ([81110], rank('Combat', 'Defense'), 'Damage taken from each hit reduced by 1.8% of your Stamina. Nature damage '
+     'taken reduced by 2%.', {0: eff(DMG_TAKEN_PCT, -2, NATURE)}, {}),
     # Void Elf
     ([81093], rank('Combat', 'Offense'), 'Your attacks, spells and heals have a chance to grant Entropic Embrace, '
      'increasing damage and healing done by 5% for 12 sec.', {0: eff(DUMMY)}, {}),
@@ -282,9 +284,10 @@ MODS = [
      {1: eff(DMG_DONE_PCT, 1, ALL), 2: eff(HEAL_DONE_PCT, 1)}, {}),
     ([81021], rank('Utility', 'Survival'), 'You can hold your breath 233% longer and swim 10% faster.',
      {1: eff(SWIM_SPEED, 10)}, {}),
-    ([81022], rank('Resistance', 'Frost, Nature'), 'Frost and Nature damage taken reduced by 1%, and the chance to be '
-     'hit by Frost spells reduced by 2%.', {1: eff(DMG_TAKEN_PCT, -1, FROST | NATURE)}, {}),
-    # Vulpera
+    ([81022], rank('Resistance', 'Frost, Nature'), 'Frost damage taken reduced by 3% and Nature damage taken reduced '
+     'by 1%.', {0: eff(DMG_TAKEN_PCT, -2, FROST), 1: eff(DMG_TAKEN_PCT, -1, FROST | NATURE)}, {}),
+    # Vulpera (Desert Hardened: aura 186 against a "damage taken" tooltip, as Rugged Tenacity)
+    ([81126], rank('Resistance', 'Nature'), 'Nature damage taken reduced by 2%.', {0: eff(DMG_TAKEN_PCT, -2, NATURE)}, {}),
     ([81125], rank('Combat', 'Defense'), 'The first time each enemy damages you, that damage is reduced by 5% of your '
      'maximum health. Dodge chance increased by 2%.', {}, {}),
     # Dark Iron Dwarf: Dungeon Delver's indoor buff (100001) gave 94% instead of 4%

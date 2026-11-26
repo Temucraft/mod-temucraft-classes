@@ -2,10 +2,12 @@
 void AddTemucraftRacialsScripts();
 void AddTemucraftHeritageScripts();
 void AddTemucraftRacialBonusesScripts();
+void AddTemucraftRacialActivesScripts();
 
 void Addmod_temucraft_racialsScripts()
 {
     AddTemucraftRacialsScripts();
     AddTemucraftHeritageScripts();
     AddTemucraftRacialBonusesScripts();
+    AddTemucraftRacialActivesScripts();
 }

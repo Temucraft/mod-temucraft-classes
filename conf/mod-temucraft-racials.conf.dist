@@ -147,3 +147,18 @@ Temucraft.Heritage.Bonus.Exclude = ""
 #        Default:     10
 
 Temucraft.Racials.Stoneform.Percent = 10
+
+#
+#    Temucraft.Racials.Actives
+#        Description: The racial actives (and missing racials) of wow-racials_v3, adapted to 3.3.5: Regeneratin',
+#                     Pterrordax Swoop, Embrace of Bwonsamdi, Fireblood, Mole Machine, Ancestral Call, Haymaker, Bag
+#                     of Tricks, Make Camp / Return to Camp, Hyper Organic Light Originator, Skeleton Pinkie, Arcane
+#                     Pulse, Cantrips, Bull Rush, Light's Judgment, Light's Reckoning, Forge of Light, Spatial Rift,
+#                     Quaking Palm, Wing Buffet, Tail Swipe, Soar, Azerite Surge, Quiet Contemplation, Thorn Bloom,
+#                     Rootwalking (spells 95835-95876, learned with the racial skill lines; they replace the renamed
+#                     stock copies some races had). Their cooldowns are final (Cooldowns above skips them).
+#                     0 = the races keep the copies (the new spells are taken away at login). docs/racials.md.
+#                     The client's tooltips come with the patch tools/build_racial_actives.py makes.
+#        Default:     1
+
+Temucraft.Racials.Actives = 1

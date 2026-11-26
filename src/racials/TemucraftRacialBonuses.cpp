@@ -17,7 +17,8 @@
 // - What auras can't do is done here: XP against some creature types, Hearthstone cooldown, best vendor discount,
 //   more gold, rested XP, falling damage, Well Fed, Plainsrunning, Touch of Elune, Combat Analysis, Emergency
 //   Failsafe, Nose for Trouble, Rugged Tenacity, Brush It Off, Entropic Embrace, Savage Blood, Mass Production,
-//   Sympathetic Vigor, Waste Not Want Not, the Elusiveness speed while stealthed.
+//   Waste Not Want Not, the Elusiveness speed while stealthed. (Sympathetic Vigor's pet half is mod-worgoblin-high-elf's
+//   now: it puts 273217 itself on the pet.)
 // - BestBonuses = 0: nothing changes, the new spells are never learned and are taken away at login.
 // Gathering stats (Deftness, Finesse, Perception) of racials are in mod-temucraft-professions
 // (mod_temucraft_profession_racial).
@@ -66,7 +67,6 @@ namespace
     constexpr uint32 SPELL_RUGGED_TENACITY = 81110;
     constexpr uint32 SPELL_EMERGENCY_FAILSAFE = 81112;
     constexpr uint32 SPELL_NOSE_FOR_TROUBLE = 81125;
-    constexpr uint32 SPELL_SYMPATHETIC_VIGOR = 273217;
     constexpr uint32 SPELL_SAVAGE_BLOOD = 273220;
     // new ones
     constexpr uint32 SPELL_NO_PLACE_LIKE_HOME = 95800;
@@ -81,7 +81,6 @@ namespace
     constexpr uint32 SPELL_CITY_OF_GOLD = 95831;
     constexpr uint32 SPELL_COMBAT_ANALYSIS = 95832;
     constexpr uint32 SPELL_WASTE_NOT = 95833;
-    constexpr uint32 SPELL_VIGOR_PET = 95834;
     constexpr uint32 SKILL_BLACKSMITHING_ID = 164;
 
     struct Settings
@@ -342,7 +341,7 @@ public:
     TemucraftRacialBonusesPlayer() : PlayerScript("TemucraftRacialBonusesPlayer",
         { PLAYERHOOK_ON_LOGIN, PLAYERHOOK_ON_LOGOUT, PLAYERHOOK_ON_LEVEL_CHANGED, PLAYERHOOK_CAN_LEARN_SPELL,
           PLAYERHOOK_ON_UPDATE, PLAYERHOOK_ON_GIVE_EXP, PLAYERHOOK_ON_BEFORE_LOOT_MONEY, PLAYERHOOK_ON_SPELL_CAST,
-          PLAYERHOOK_ON_GET_REPUTATION_PRICE_DISCOUNT, PLAYERHOOK_ON_AFTER_GUARDIAN_INIT_STATS_FOR_LEVEL }) { }
+          PLAYERHOOK_ON_GET_REPUTATION_PRICE_DISCOUNT }) { }
 
     void OnPlayerLogin(Player* player) override
     {
@@ -454,14 +453,6 @@ public:
     {
         if (settings.enable && player->HasSpell(SPELL_BEST_DEALS))
             discount = std::min(discount, 0.8f);
-    }
-
-    // Sympathetic Vigor: the pet's health
-    void OnPlayerAfterGuardianInitStatsForLevel(Player* player, Guardian* guardian) override
-    {
-        if (settings.enable && guardian && guardian->IsPet() && player->HasSpell(SPELL_SYMPATHETIC_VIGOR))
-            if (!guardian->HasAura(SPELL_VIGOR_PET))
-                guardian->AddAura(SPELL_VIGOR_PET, guardian);
     }
 };
 
